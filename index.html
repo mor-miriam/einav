@@ -628,14 +628,19 @@ html[dir=ltr] .spec-info{text-align:left}
   #products { background:var(--white); }
   #gallery { background:var(--cream); }
   #products h2, #gallery h2 { font-size:clamp(24px,2.8vw,34px); font-weight:400; letter-spacing:-.02em; }
-  .gallery-grid { gap:16px; margin-top:40px; }
-  .gallery-grid .gitem { border-radius:14px; background:var(--band); }
-  #productsGrid .gitem { aspect-ratio:auto; background:transparent; }
-  #productsGrid .gitem img { aspect-ratio:1/1; border-radius:14px; }
-  #productsGrid .gitem .cap { position:static; inset:auto; opacity:1; background:none; text-shadow:none;
-    color:var(--brown); font-size:13px; font-weight:300; letter-spacing:.02em; text-align:center;
-    padding:14px 4px 0; display:block; }
-  #productsGrid .gitem:hover .cap { background:none; }
+  /* גריד המוצרים — זהה לכיכר: שם המוצר על התמונה */
+  .gallery-grid { grid-template-columns:repeat(3,1fr); gap:10px; margin-top:40px; }
+  .gallery-grid .gitem { aspect-ratio:1/1; border-radius:10px; background:var(--band); }
+  #productsGrid .gitem img { border-radius:0; }
+  #productsGrid .gitem .cap {
+    position:absolute; inset:0; opacity:1;
+    display:flex; align-items:flex-end; justify-content:center; text-align:center;
+    padding:0 14px 18px;
+    font-size:19px; font-weight:600; line-height:1.3; letter-spacing:.02em; color:#fff;
+    background:linear-gradient(rgba(0,0,0,0) 55%, rgba(0,0,0,.5));
+    text-shadow:0 1px 4px rgba(0,0,0,.7), 0 2px 14px rgba(0,0,0,.55);
+    transition:background .25s; }
+  #productsGrid .gitem:hover .cap { background:linear-gradient(rgba(0,0,0,0) 45%, rgba(0,0,0,.62)); }
 
   /* אולם התצוגה */
   #visit { background:var(--white); }
@@ -665,7 +670,8 @@ html[dir=ltr] .spec-info{text-align:left}
     .config { padding:52px 18px 64px; }
     .config-card { padding:6px 8px; border-radius:16px; }
     .summary { padding:26px 20px; border-radius:16px; }
-    .gallery-grid { gap:12px; }
+    .gallery-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+    #productsGrid .gitem .cap { font-size:15.5px; padding:0 10px 12px; }
     .sticky-total { display:flex; }
     .summary { grid-template-columns:1fr; gap:22px; }
     .summary .lines div { max-width:none; }
