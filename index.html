@@ -489,12 +489,9 @@ html[dir=ltr] .spec-info{text-align:left}
   <div class="nav-right">
     <a onclick="go('config')" class="hide-m" data-i18n="nav_quote"></a>
     <a onclick="go('products')" data-i18n="nav_products"></a>
-    <a onclick="go('specs')" class="hide-m" data-i18n="nav_specs"></a>
     <a onclick="go('finishes')" class="hide-m" data-i18n="nav_finishes"></a>
     <a onclick="go('gallery')" data-i18n="nav_projects"></a>
-    <a onclick="go('motion')" class="hide-m" data-i18n="nav_motor"></a>
     <a onclick="go('visit')" class="hide-m" data-i18n="nav_showroom"></a>
-    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
     <button class="nav-cta" onclick="go('config')" data-i18n="nav_cta"></button>
   </div>
   <div class="logo-side">
@@ -521,8 +518,7 @@ html[dir=ltr] .spec-info{text-align:left}
       </div>
       <div class="hero-actions">
         <button class="btn btn-solid" onclick="go('config')" data-i18n="hero_cta1"></button>
-        <button class="btn btn-outline" onclick="openModal('visit')" data-i18n="hero_cta2"></button>
-      </div>
+        </div>
     </div>
     <div class="hero-img">
       <img id="heroImg" src="https://www.miriam.co.il/cdn/shop/files/Cou_MB10_SCR-3005-08.jpg?v=1773682226&width=1200" alt="וילונות בהתאמה אישית לבית"
@@ -582,37 +578,9 @@ html[dir=ltr] .spec-info{text-align:left}
   </div>
 </section>
 
-<section class="featured" id="featured">
-  <div class="wrap about-grid">
-    <div class="feat-img" id="featImg"></div>
-    <div>
-      <div class="feat-badge" data-c="featKicker"></div>
-      <h2 data-c="featTitle"></h2>
-      <p class="lead" data-c="featText"></p>
-    </div>
-  </div>
-</section>
 
-<section class="motion" id="motion">
-  <div class="wrap about-grid">
-    <div>
-      <div class="kicker" data-c="motionKicker"></div>
-      <h2 data-c="motionTitle"></h2>
-      <p class="lead" data-c="motionLead"></p>
-      <ul class="mpoints">
-        <li data-c="mp1"></li>
-        <li data-c="mp2"></li>
-        <li data-c="mp3"></li>
-        <li data-c="mp4"></li>
-      </ul>
-      <div class="motor-brands">
-        <div class="mbrand"><b data-c="brand1Name"></b><p data-c="brand1Text"></p></div>
-        <div class="mbrand"><b data-c="brand2Name"></b><p data-c="brand2Text"></p></div>
-      </div>
-    </div>
-    <div class="motion-img" id="motionImg"></div>
-  </div>
-</section>
+
+
 
 <section id="products" style="background:#fafafa; border-top:1px solid var(--line)">
   <div class="wrap">
@@ -625,16 +593,7 @@ html[dir=ltr] .spec-info{text-align:left}
   </div>
 </section>
 
-<section class="specs" id="specs">
-  <div class="wrap">
-    <div class="center">
-      <div class="kicker" data-i18n="sp_kicker"></div>
-      <h2 data-i18n="sp_title"></h2>
-      <p class="lead" data-i18n="sp_lead" style="margin:0 auto"></p>
-    </div>
-    <div class="spec-list" id="specList"></div>
-  </div>
-</section>
+
 
 <section class="finishes" id="finishes">
   <div class="wrap">
@@ -707,8 +666,7 @@ html[dir=ltr] .spec-info{text-align:left}
     <div class="quote-meta" id="quoteMeta"></div>
     <div class="config-ctas">
       <button class="btn btn-solid" onclick="reserveClick()" data-i18n="cta_reserve"></button>
-      <button class="btn btn-outline" onclick="openModal('visit')" data-i18n="cta_visit"></button>
-    </div>
+      </div>
     <p class="cta-sub" data-i18n="cta_sub"></p>
   </div>
 </section>
@@ -734,9 +692,6 @@ html[dir=ltr] .spec-info{text-align:left}
         <div><b data-i18n="v_addr_l"></b> <span data-c="visitAddr"></span></div>
         <div><b data-i18n="v_pm_l"></b> <span data-c="pmName"></span></div>
         <div><b data-i18n="v_mail_l"></b> <span data-c="pmEmail"></span></div>
-      </div>
-      <div style="margin-top:28px">
-        <button class="btn btn-solid" onclick="openModal('visit')" data-i18n="v_btn"></button>
       </div>
     </div>
     <div class="visit-img" id="visitImg"></div>
@@ -782,14 +737,7 @@ html[dir=ltr] .spec-info{text-align:left}
   </div>
 </div>
 
-<section class="video-sec" id="videoSec">
-  <div class="wrap center">
-    <div class="kicker" data-i18n="vid_kicker"></div>
-    <h2 data-i18n="vid_title"></h2>
-    <p class="lead" data-i18n="vid_lead" style="margin:0 auto 34px"></p>
-    <div class="video-frame" id="videoFrame"></div>
-  </div>
-</section>
+
 
 <footer>
   <div class="flogo">MIRIAM<small>HOUSE OF DESIGN</small></div>
@@ -1403,8 +1351,10 @@ function go(id) { document.getElementById(id).scrollIntoView(); }
 function applyContent() {
   document.querySelectorAll('[data-c]').forEach(el => { el.textContent = c(el.dataset.c) ?? ''; });
   document.getElementById('aboutImg').style.backgroundImage = `url('${CONTENT.aboutImg}')`;
-  document.getElementById('featImg').style.backgroundImage = `url('${CONTENT.featImg}')`;
-  document.getElementById('motionImg').style.backgroundImage = `url('${CONTENT.motionImg}')`;
+  const _fi = document.getElementById('featImg');
+  if (_fi) _fi.style.backgroundImage = `url('${CONTENT.featImg}')`;
+  const _mi = document.getElementById('motionImg');
+  if (_mi) _mi.style.backgroundImage = `url('${CONTENT.motionImg}')`;
   document.getElementById('visitImg').style.backgroundImage = `url('${CONTENT.visitImg}')`;
   const vf=document.getElementById('videoFrame');
   if(vf){ vf.innerHTML = CONTENT.videoUrl ? `<video src="${CONTENT.videoUrl}" controls playsinline preload="metadata"></video>` : `<div class="video-ph">${LANG==='en'?'Video coming soon':'הווידאו יתווסף בקרוב'}</div>`; }
@@ -2618,6 +2568,25 @@ tbody.innerHTML = '';
 rowsSqm.innerHTML = '';
 addRow({ room:'living' });
 addRow({ room:'bedroom' });
+applyI18n();
+</script>
+
+<script>
+Object.assign(I18N.he, {
+  nav_quote:'למימוש ההטבה', nav_cta:'למימוש ההטבה', hero_cta1:'למימוש ההטבה',
+  cfg_kicker:'מימוש ההטבה', cfg_title:'למימוש ההטבה',
+  cfg_lead:'בחרו מוצר, חדר ומידות — והמחיר עם ההטבה מתעדכן על המסך. כולל מע״מ, הובלה, התקנה ומדידה מקצועית.',
+  cta_reserve:'למימוש ההטבה ושליחה לוואטסאפ',
+  cta_sub:'ההטבה תישלח אליכם לוואטסאפ ותישמר אצלנו במערכת. אחרי זה נשאר רק להגיע לאולם התצוגה, לבחור בד ולאשר.',
+  m_res_t:'מימוש ההטבה', m_res_b:'למימוש ההטבה',
+  m_res_x:'השאירו פרטים — הפירוט המלא ייפתח לכם בוואטסאפ ויישמר אצלנו במערכת. נחזור אליכם לתיאום מדידה ובחירת בד.',
+  vid_kicker:'', vid_title:'', vid_lead:''
+});
+/* אין גרסת אנגלית — הדף עברית בלבד */
+window.toggleLang = function(){};
+document.querySelectorAll('.collab .go').forEach(function(el){ el.textContent = 'למימוש ההטבה ›'; });
+var _perk = document.querySelector('.einav-perk .btn');
+if (_perk) _perk.textContent = 'למימוש ההטבה';
 applyI18n();
 </script>
 </body>
