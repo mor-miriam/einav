@@ -475,6 +475,26 @@ html[dir=ltr] .spec-info{text-align:left}
     table.quote tbody#rowsSqm td:nth-child(4) { position:static; }
     table.quote tbody#rowsSqm td:nth-child(5) { position:absolute; top:6px; inset-inline-start:6px; }
   }
+
+  /* ===== גרסה בוטיקית — הירו ממורכז ללא תמונה ===== */
+  .hero { padding-bottom:56px; }
+  .hero-grid { grid-template-columns:1fr; max-width:720px; text-align:center; gap:0; }
+  .hero .loc, .hero p.sub { margin-inline:auto; }
+  .hero p.sub { max-width:560px; font-size:17px; }
+  .hero-slogan { justify-content:center; }
+  .hero-slogan::before { display:none; }
+  .hero-actions { justify-content:center; }
+  .hero h1 { font-size:clamp(34px,4.4vw,54px); font-weight:600; }
+  .hero-kicker { font-size:13.5px; font-weight:500; letter-spacing:.08em; padding:9px 22px; }
+  section { padding:72px 24px; }
+  .einav { padding:72px 24px; }
+  h2 { font-weight:500; }
+  .kicker { letter-spacing:.24em; }
+  @media (max-width:900px) {
+    .hero { padding-bottom:36px; }
+    .hero h1 { font-size:clamp(30px,8.5vw,42px); }
+    section { padding:52px 18px; }
+  }
 </style>
 </head>
 <body>
@@ -489,7 +509,6 @@ html[dir=ltr] .spec-info{text-align:left}
   <div class="nav-right">
     <a onclick="go('config')" class="hide-m" data-i18n="nav_quote"></a>
     <a onclick="go('products')" data-i18n="nav_products"></a>
-    <a onclick="go('finishes')" class="hide-m" data-i18n="nav_finishes"></a>
     <a onclick="go('gallery')" data-i18n="nav_projects"></a>
     <a onclick="go('visit')" class="hide-m" data-i18n="nav_showroom"></a>
     <button class="nav-cta" onclick="go('config')" data-i18n="nav_cta"></button>
@@ -511,19 +530,12 @@ html[dir=ltr] .spec-info{text-align:left}
       <div class="hero-slogan" data-c="heroSlogan"></div>
       <div class="loc" data-c="heroLoc"></div>
       <p class="sub" data-c="heroSub"></p>
-      <div class="stats">
-        <div class="stat"><b data-c="stat1n"></b><span data-c="stat1l"></span></div>
-        <div class="stat"><b data-c="stat2n"></b><span data-c="stat2l"></span></div>
-        <div class="stat"><b data-c="stat3n"></b><span data-c="stat3l"></span></div>
-      </div>
+      
       <div class="hero-actions">
         <button class="btn btn-solid" onclick="go('config')" data-i18n="hero_cta1"></button>
         </div>
     </div>
-    <div class="hero-img">
-      <img id="heroImg" src="https://www.miriam.co.il/cdn/shop/files/Cou_MB10_SCR-3005-08.jpg?v=1773682226&width=1200" alt="וילונות בהתאמה אישית לבית"
-           onerror="this.onerror=null;this.src='https://www.miriam.co.il/cdn/shop/files/EVE_Motionblinds_Richmond-0100_8a6573d4-2c76-4dd0-9930-84fc068a8a9b.jpg?v=1774957432&width=1200'">
-    </div>
+    
   </div>
 </header>
 
@@ -553,30 +565,9 @@ html[dir=ltr] .spec-info{text-align:left}
   <div class="wrap"><div class="einav-gal" id="einavGal"></div></div>
 </section>
 
-<section class="logos">
-  <div class="wrap center">
-    <div class="kicker" data-i18n="logos_title"></div>
-    <p class="logos-sub" data-i18n="logos_sub"></p>
-    <div class="logo-track" id="logoTrack"></div>
-  </div>
-</section>
 
-<section class="about">
-  <div class="wrap about-grid">
-    <div>
-      <div class="kicker">MIRIAM HOUSE OF DESIGN</div>
-      <h2 data-c="aboutTitle"></h2>
-      <p class="lead" data-c="aboutLead"></p>
-      <ul class="checks">
-        <li data-c="check1"></li>
-        <li data-c="check2"></li>
-        <li data-c="check3"></li>
-        <li data-c="check4"></li>
-      </ul>
-    </div>
-    <div class="about-img" id="aboutImg"></div>
-  </div>
-</section>
+
+
 
 
 
@@ -595,19 +586,7 @@ html[dir=ltr] .spec-info{text-align:left}
 
 
 
-<section class="finishes" id="finishes">
-  <div class="wrap">
-    <div class="center">
-      <div class="kicker" data-i18n="fin_kicker"></div>
-      <h2 data-i18n="fin_title"></h2>
-      <p class="lead" data-i18n="fin_lead" style="margin:0 auto"></p>
-    </div>
-    <div class="fin-cols">
-      <div><h4 class="fin-h" data-i18n="fin_profile"></h4><div class="fsw-grid" id="profileSwatches"></div></div>
-      <div><h4 class="fin-h" data-i18n="fin_chain"></h4><div class="fsw-grid" id="chainSwatches"></div></div>
-    </div>
-  </div>
-</section>
+
 
 <section class="config" id="config">
   <div class="wrap">
@@ -616,12 +595,7 @@ html[dir=ltr] .spec-info{text-align:left}
       <h2 data-i18n="cfg_title"></h2>
       <p class="lead" data-i18n="cfg_lead"></p>
     </div>
-    <div style="text-align:center">
-      <div class="mode-toggle">
-        <button class="mode-btn on" data-mode="window" onclick="setMode('window')" data-i18n="mode_window"></button>
-        <button class="mode-btn" data-mode="sqm" onclick="setMode('sqm')" data-i18n="mode_sqm"></button>
-      </div>
-    </div>
+    
     <div class="config-card">
       <table class="quote" id="quoteTable">
         <thead class="th-window">
@@ -698,22 +672,7 @@ html[dir=ltr] .spec-info{text-align:left}
   </div>
 </section>
 
-<div class="services">
-  <div class="services-row">
-    <div class="srv">
-      <img class="sicon" src="https://www.miriam.co.il/cdn/shop/files/1.png" alt="">
-      <b data-c="srv1t"></b><p data-c="srv1p"></p>
-    </div>
-    <div class="srv">
-      <img class="sicon" src="https://www.miriam.co.il/cdn/shop/files/3.png" alt="">
-      <b data-c="srv2t"></b><p data-c="srv2p"></p>
-    </div>
-    <div class="srv">
-      <img class="sicon" src="https://www.miriam.co.il/cdn/shop/files/2.png" alt="">
-      <b data-c="srv3t"></b><p data-c="srv3p"></p>
-    </div>
-  </div>
-</div>
+
 
 <!-- מודאל מפרט מוצר -->
 <div class="modal-bg spec-modal" id="specModal" onclick="if(event.target===this) closeSpecModal()">
@@ -1009,11 +968,11 @@ const PRICES_DEFAULT = /*PJSON*/{
 }/*PJSONEND*/;
 
 const CONTENT_DEFAULT = /*CJSON*/{
- "heroKicker": "הטבה בלעדית לעוקבות של עינב כהן",
- "heroTitle": "וילונות שנתפרים בדיוק לבית שלכם",
- "heroSlogan": "20% הנחה עם הקוד EINAV.",
- "heroLoc": "מחיר מיידי במחשבון · מדידה והתקנה מקצועית · אחריות 5 שנים",
- "heroSub": "עינב עשתה את זה אצלה בבית — ועכשיו תורכם. בוחרים מוצר, מזינים מידות ומקבלים מחיר סופי על המסך, כולל מע״מ, הובלה והתקנה. משם נשאר רק להגיע לאולם התצוגה, לבחור את הבד ולאשר.",
+ "heroKicker": "בשיתוף עינב כהן",
+ "heroTitle": "וילונות בהתאמה אישית",
+ "heroSlogan": "20% הנחה עם הקוד EINAV",
+ "heroLoc": "",
+ "heroSub": "בוחרים מוצר, מזינים מידות ורואים מחיר. זהו.",
  "stat1n": "20%",
  "stat1l": "הנחה עם קוד EINAV",
  "stat2n": "18",
@@ -1049,9 +1008,9 @@ const CONTENT_DEFAULT = /*CJSON*/{
  "brand1Text": "הדור החדש של מנועים חכמים ושקטים — סוללת USB-C נטענת או חיבור קבוע, תפעול מהנייד, שלט או פקודת קול, ותאימות מלאה לבית חכם (Matter, Apple Home, Google, Alexa).",
  "brand2Name": "SOMFY®",
  "brand2Text": "מותג המנועים המוביל והמבוקש בעולם — אמינות גבוהה, שילוב עם מערכות בית חכם ובקרת TaHoma, ושירות ואחריות ארציים.",
- "prodKicker": "המוצרים שלנו",
- "prodTitle": "קטלוג הפתרונות שלנו",
- "prodLead": "כל פתרונות ההצללה שלנו בהתאמה אישית מלאה לכל חלון — לחצו על מוצר להתרשמות מקרוב.",
+ "prodKicker": "",
+ "prodTitle": "המוצרים שלנו",
+ "prodLead": "",
  "productsGrid": [
   {
    "src": "https://www.miriam.co.il/cdn/shop/files/850_4171AAA_copy.jpg?v=1782672567&width=900",
@@ -1090,9 +1049,9 @@ const CONTENT_DEFAULT = /*CJSON*/{
    "cap": "דואט Honeycomb"
   }
  ],
- "galKicker": "הפרויקטים שלנו",
- "galTitle": "בתים שכבר בחרו בנו",
- "galLead": "מבחר בתים פרטיים, מלונות ופרויקטים — עיצוב, תפירה והתקנה של Miriam House of Design.",
+ "galKicker": "",
+ "galTitle": "בתים שעשינו",
+ "galLead": "",
  "gallery": [
   {
    "src": "https://www.miriam.co.il/cdn/shop/files/WhatsApp_2024-08-25_18.02.06_94cc69a5.jpg?v=1725979388&width=900",
@@ -1153,8 +1112,8 @@ const CONTENT_DEFAULT = /*CJSON*/{
    "cap": "רוטשטיין"
   }
  ],
- "visitTitle": "בואו להתרשם מקרוב",
- "visitLead": "באולם התצוגה שלנו תמצאו קולקציה רחבה של בדים איכותיים ממיטב היצרנים בעולם — בדי וילונות, בדי האפלה, בדים חצי־שקופים וטקסטורליים. תקבלו ייעוץ מקצועי ואישי, באווירה משפחתית חמה.",
+ "visitTitle": "בואו לבחור בד",
+ "visitLead": "אולם התצוגה שלנו בלח״י 2, בני ברק — מתחם דן דיזיין סנטר.",
  "visitAddr": "לח״י 2, בני ברק — מתחם דן דיזיין סנטר",
  "pmName": "מור",
  "pmEmail": "mor@miriam.co.il",
@@ -1171,12 +1130,12 @@ const CONTENT_DEFAULT = /*CJSON*/{
  "payAmount": 400,
  "payUrl": "",
  "videoUrl": "",
- "einavKicker": "שיתוף פעולה",
- "einavTitle": "הבית של עינב כהן",
- "einavQuote": "חיפשתי וילונות הרבה זמן ולא מצאתי משהו שמרגיש בדיוק כמו הבית שלי — עד שהגעתי למרים. תפרו לי בהתאמה אישית, הגיעו למדוד, התקינו, וזה שינה לי את כל הסלון.",
+ "einavKicker": "",
+ "einavTitle": "הבית של עינב",
+ "einavQuote": "תפרו לי בהתאמה אישית, הגיעו למדוד, התקינו — וזה שינה לי את כל הסלון.",
  "einavName": "עינב כהן",
  "einavHandle": "@einavcohen",
- "einavText": "עינב בחרה איתנו בד, מידות וגימור בדיוק כמו שאתם עומדים לעשות עכשיו. כי היא ביקשה שגם אתם תקבלו את אותו יחס ואת אותו מחיר, בנינו את קוד ההטבה EINAV — 20% הנחה על כל קטלוג הוילונות וההצללה, כולל מדידה והתקנה מקצועית.",
+ "einavText": "ההטבה שעינב ביקשה עבורכם: 20% הנחה עם הקוד EINAV, על כל הוילונות וההצללה.",
  "einavImg": "https://www.miriam.co.il/cdn/shop/files/WhatsApp_2024-08-25_18.02.06_94cc69a5.jpg?v=1725979388&width=900",
  "einavGallery": [],
  "couponCode": "EINAV",
@@ -1350,7 +1309,8 @@ function go(id) { document.getElementById(id).scrollIntoView(); }
 /* ============ רינדור תוכן ============ */
 function applyContent() {
   document.querySelectorAll('[data-c]').forEach(el => { el.textContent = c(el.dataset.c) ?? ''; });
-  document.getElementById('aboutImg').style.backgroundImage = `url('${CONTENT.aboutImg}')`;
+  const _ai = document.getElementById('aboutImg');
+  if (_ai) _ai.style.backgroundImage = `url('${CONTENT.aboutImg}')`;
   const _fi = document.getElementById('featImg');
   if (_fi) _fi.style.backgroundImage = `url('${CONTENT.featImg}')`;
   const _mi = document.getElementById('motionImg');
@@ -2579,7 +2539,9 @@ Object.assign(I18N.he, {
   cta_reserve:'למימוש ההטבה ושליחה לוואטסאפ',
   cta_sub:'ההטבה תישלח אליכם לוואטסאפ ותישמר אצלנו במערכת. אחרי זה נשאר רק להגיע לאולם התצוגה, לבחור בד ולאשר.',
   m_res_t:'מימוש ההטבה', m_res_b:'למימוש ההטבה',
-  m_res_x:'השאירו פרטים — הפירוט המלא ייפתח לכם בוואטסאפ ויישמר אצלנו במערכת. נחזור אליכם לתיאום מדידה ובחירת בד.',
+  m_res_x:'השאירו פרטים — הפירוט ייפתח לכם בוואטסאפ. נחזור אליכם לתיאום מדידה ובחירת בד.',
+  sum_note:'המחיר לפי המידות שהזנתם, וכפוף למדידה בשטח ולבחירת הבד באולם התצוגה.',
+  cta_sub:'',
   vid_kicker:'', vid_title:'', vid_lead:''
 });
 /* אין גרסת אנגלית — הדף עברית בלבד */
