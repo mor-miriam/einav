@@ -523,6 +523,163 @@ html[dir=ltr] .spec-info{text-align:left}
     .einav-portrait { width:66px; }
     .einav blockquote { font-size:15px; }
   }
+
+  /* ============================================================
+     שכבת עיצוב — מערכת המותג של MIRIAM
+     קרם כרקע · שחור־עמוק לטיפוגרפיה · חומר, אור וחלל
+     ============================================================ */
+  :root {
+    --cream:#F4F2EC; --ink:#1D1918; --brown:#33282A;
+    --muted:#8B8179; --hair:#E2DED5; --white:#FFFFFF;
+    --band:#EAE6DD; --radius:12px;
+  }
+  body { background:var(--cream); color:var(--ink); font-weight:300; }
+  .hidden-finish { display:none; }
+
+  /* ניווט ופס הקוד */
+  .collab { background:var(--ink); font-size:12.5px; font-weight:400; letter-spacing:.04em; padding:11px 18px; }
+  .collab .code { background:var(--cream); color:var(--ink); font-size:11px; letter-spacing:.22em; padding:4px 14px; }
+  .collab .go { text-decoration:none; border-bottom:1px solid rgba(255,255,255,.35); padding-bottom:1px; }
+  nav { background:rgba(244,242,236,.82); border-bottom:1px solid var(--hair); padding:16px 40px; }
+  .nav-cta { background:var(--ink); border-radius:100px; padding:11px 26px; font-size:13.5px; letter-spacing:.01em; }
+  .logo-text .l1, .logo-text .l2 { color:var(--ink); }
+
+  /* Hero — אוויר וטיפוגרפיה */
+  .hero { background:var(--cream); padding-bottom:64px; }
+  .hero-kicker { background:transparent; color:var(--muted); border:1px solid var(--hair);
+    font-size:11.5px; font-weight:400; letter-spacing:.26em; padding:8px 20px; margin-bottom:34px; }
+  .hero h1 { font-size:clamp(38px,5.2vw,68px); font-weight:400; letter-spacing:-.025em; line-height:1.04; }
+  .hero-slogan { font-size:clamp(16px,1.7vw,19px); font-weight:400; color:var(--brown);
+    letter-spacing:.01em; margin:20px 0 14px; }
+  .hero p.sub { font-size:16px; color:var(--muted); font-weight:300; margin-bottom:38px; }
+  .btn { border-radius:100px; font-weight:400; letter-spacing:.01em; transition:transform .18s ease, opacity .18s ease; }
+  .btn-solid { background:var(--ink); border-color:var(--ink); padding:16px 40px; font-size:15.5px; }
+  .btn-solid:hover { background:var(--ink); opacity:.86; transform:translateY(-1px); }
+
+  /* רצועת עינב */
+  .einav { background:var(--band); padding:30px 24px; }
+  .einav blockquote { border-inline-start:1px solid var(--muted); color:var(--brown);
+    font-size:16px; font-weight:300; letter-spacing:.005em; }
+  .einav .who b { font-weight:500; }
+  .einav .who { color:var(--muted); }
+
+  /* ===== הטופס ===== */
+  .config { background:var(--cream); padding:78px 24px 88px; }
+  .config .kicker { color:var(--muted); font-size:11.5px; letter-spacing:.26em; }
+  .config h2 { font-size:clamp(28px,3.4vw,42px); font-weight:400; letter-spacing:-.02em; }
+  .config .lead { color:var(--muted); font-size:15.5px; }
+
+  .config-card { background:var(--white); border:none; border-radius:18px; margin-top:38px;
+    padding:10px 12px 4px; box-shadow:0 1px 2px rgba(29,25,24,.04), 0 12px 34px -18px rgba(29,25,24,.16); }
+  table.quote th { background:transparent; color:var(--muted); font-size:11px; font-weight:400;
+    letter-spacing:.16em; padding:16px 12px 12px; border-bottom:1px solid var(--hair); }
+  table.quote td { border-bottom:1px solid var(--hair); padding:12px 8px; }
+  table.quote tbody tr:last-child td { border-bottom:none; }
+  .quote select, .quote input { border:1px solid var(--hair); border-radius:10px; background:var(--white);
+    padding:13px 14px; font-size:15px; font-weight:300; color:var(--ink); transition:border-color .16s ease, box-shadow .16s ease; }
+  .quote select:focus, .quote input:focus { outline:none; border-color:var(--ink); box-shadow:0 0 0 3px rgba(29,25,24,.07); }
+  .quote input::placeholder { color:#BDB5AC; }
+  td.price-cell { font-weight:500; font-size:16px; letter-spacing:-.01em;
+    font-variant-numeric:tabular-nums; color:var(--ink); }
+  td.price-cell .orig { color:var(--muted); font-weight:300; font-size:13px; text-decoration:line-through; }
+  td.price-cell small { color:var(--muted); font-size:10.5px; letter-spacing:.1em; }
+  .add-row { border:none; background:transparent; color:var(--brown); font-size:14.5px;
+    padding:18px; width:100%; letter-spacing:.01em; }
+  .add-row:hover { color:var(--ink); background:#FBFAF7; }
+  .row-remove { color:#C9C1B8; font-size:17px; }
+  .row-remove:hover { color:var(--brown); }
+
+  /* קוד ההטבה */
+  .coupon { background:var(--white); border:1px solid var(--hair); border-radius:14px;
+    padding:18px 22px; margin-top:16px; gap:16px; }
+  .coupon label { font-size:12px; font-weight:400; color:var(--muted); letter-spacing:.14em; }
+  .coupon input { border:1px solid var(--hair); border-radius:10px; background:#FBFAF7;
+    font-size:15px; font-weight:500; letter-spacing:.2em; padding:12px 14px; }
+  .coupon input:focus { outline:none; border-color:var(--ink); box-shadow:0 0 0 3px rgba(29,25,24,.07); }
+  .coupon-state { font-size:13px; font-weight:300; }
+  .coupon-state.ok { color:#4A6B52; }
+  .coupon-state.bad { color:#8C4A44; }
+
+  /* סיכום */
+  .summary { background:var(--white); border:none; border-radius:18px; padding:34px 38px; margin-top:16px;
+    box-shadow:0 1px 2px rgba(29,25,24,.04), 0 12px 34px -18px rgba(29,25,24,.16); }
+  .summary .lines { font-size:14.5px; font-weight:300; color:var(--brown); gap:10px; }
+  .summary .lines div { max-width:520px; }
+  .summary .lines .orig { color:var(--muted); text-decoration:line-through; font-size:13px; }
+  .summary .lines .inst { border-top:1px solid var(--hair); padding-top:12px; margin-top:6px; }
+  .summary .lines .save { border-top:1px solid var(--hair); padding-top:12px; }
+  .summary .lines .save span { color:#4A6B52; font-weight:400; }
+  .summary .lines .vat-of { color:var(--muted); font-size:12.5px; }
+  .summary .total-label { color:var(--muted); font-size:11px; letter-spacing:.22em; }
+  .summary .total { font-weight:500; letter-spacing:-.03em; font-variant-numeric:tabular-nums;
+    font-size:clamp(34px,4.4vw,48px); }
+  .summary .total small { color:var(--muted); font-weight:300; font-size:12.5px; margin-top:8px;
+    white-space:normal; line-height:1.5; max-width:230px; }
+  .summary { display:grid; grid-template-columns:1fr minmax(230px,auto); align-items:start; gap:28px 44px; }
+  .summary > div:nth-of-type(2) { text-align:start; }
+  .summary-note { grid-column:1 / -1; padding-top:18px; margin-top:4px; }
+  .summary-note { color:var(--muted); font-size:12.5px; font-weight:300; border-top:1px solid var(--hair); }
+  .quote-meta { border:none; background:transparent; color:var(--muted); font-size:12px;
+    letter-spacing:.02em; padding:16px 0 0; }
+  .quote-meta b { font-weight:500; color:var(--brown); }
+  .config-ctas { margin-top:30px; }
+
+  /* מוצרים ופרויקטים — תמונה, כיתוב מתחת */
+  #products { background:var(--white); }
+  #gallery { background:var(--cream); }
+  #products h2, #gallery h2 { font-size:clamp(24px,2.8vw,34px); font-weight:400; letter-spacing:-.02em; }
+  .gallery-grid { gap:16px; margin-top:40px; }
+  .gallery-grid .gitem { border-radius:14px; background:var(--band); }
+  #productsGrid .gitem { aspect-ratio:auto; background:transparent; }
+  #productsGrid .gitem img { aspect-ratio:1/1; border-radius:14px; }
+  #productsGrid .gitem .cap { position:static; inset:auto; opacity:1; background:none; text-shadow:none;
+    color:var(--brown); font-size:13px; font-weight:300; letter-spacing:.02em; text-align:center;
+    padding:14px 4px 0; display:block; }
+  #productsGrid .gitem:hover .cap { background:none; }
+
+  /* אולם התצוגה */
+  #visit { background:var(--white); }
+  #visit h2 { font-size:clamp(24px,2.8vw,34px); font-weight:400; letter-spacing:-.02em; }
+  #visit .lead { color:var(--muted); }
+  .visit-info { color:var(--brown); font-weight:300; }
+  .visit-img { border-radius:16px; }
+
+  footer { background:var(--ink); }
+  .modal { border-radius:20px; }
+  .modal input { border:1px solid var(--hair); border-radius:10px; padding:14px; font-weight:300; }
+  .modal input:focus { outline:none; border-color:var(--ink); box-shadow:0 0 0 3px rgba(29,25,24,.07); }
+
+  /* סרגל סיכום דביק — מובייל */
+  .sticky-total { position:fixed; inset-inline:0; bottom:0; z-index:115; display:none;
+    align-items:center; justify-content:space-between; gap:14px; padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.94); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border-top:1px solid var(--hair); transform:translateY(110%); transition:transform .28s ease; }
+  .sticky-total.on { transform:translateY(0); }
+  .sticky-total .st-num { font-size:20px; font-weight:500; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+  .sticky-total .st-lbl { font-size:11px; color:var(--muted); letter-spacing:.14em; display:block; }
+  .sticky-total .btn { padding:13px 26px; font-size:14.5px; white-space:nowrap; }
+
+  @media (max-width:900px) {
+    nav { padding:13px 18px; }
+    .hero { padding-bottom:44px; }
+    .config { padding:52px 18px 64px; }
+    .config-card { padding:6px 8px; border-radius:16px; }
+    .summary { padding:26px 20px; border-radius:16px; }
+    .gallery-grid { gap:12px; }
+    .sticky-total { display:flex; }
+    .summary { grid-template-columns:1fr; gap:22px; }
+    .summary .lines div { max-width:none; }
+    .summary .total small { max-width:none; }
+    .summary .lines { font-size:14px; }
+    .wa-float { bottom:82px; }
+    .config-ctas { padding-bottom:14px; }
+  }
+  @media (max-width:760px) {
+    table.quote tr { border:1px solid var(--hair); border-radius:16px; padding:38px 14px 14px; background:var(--white); }
+    table.quote tbody#rows td:nth-child(6) { position:static; }
+    table.quote tbody#rows td:nth-child(7) { position:absolute; top:8px; inset-inline-start:8px; }
+    td.price-cell::before { color:var(--muted); font-size:11px; letter-spacing:.14em; }
+  }
 </style>
 </head>
 <body>
@@ -613,8 +770,7 @@ html[dir=ltr] .spec-info{text-align:left}
             <th style="width:12%" data-i18n="th_width"></th>
             <th style="width:12%" data-i18n="th_height"></th>
             <th style="width:9%" data-i18n="th_qty"></th>
-            <th style="width:19%" data-i18n="th_finish"></th>
-            <th style="width:13%" data-i18n="th_price"></th>
+            <th style="width:16%" data-i18n="th_price"></th>
             <th style="width:5%"></th>
           </tr>
         </thead>
@@ -2277,15 +2433,13 @@ function buildOrder() {
 function addRow(preset) {
   var tr = document.createElement('tr');
   tr.innerHTML =
-    '<td><select class="f-product" onchange="onProductChange(this)">' + productOptions() + '</select></td>' +
+    '<td><select class="f-product" onchange="onProductChange(this)">' + productOptions() + '</select>' +
+      '<span class="hidden-finish"><select class="f-color">' + colorOptions() + '</select>' +
+      '<select class="f-chain">' + chainOptions() + '</select></span></td>' +
     '<td><select class="f-room" onchange="calc()">' + roomOptions() + '</select></td>' +
     '<td><input type="number" min="20" max="900" placeholder="' + t('ph_width') + '" class="f-w" oninput="calc()"></td>' +
     '<td><input type="number" min="20" max="500" placeholder="' + t('ph_height') + '" class="f-h" oninput="calc()"></td>' +
     '<td><input type="number" min="1" max="500" value="1" class="f-qty" oninput="calc()"></td>' +
-    '<td class="finish-cell">' +
-      '<div class="fin"><span class="sw-dot" data-for="color"></span><select class="f-color" onchange="calc()">' + colorOptions() + '</select></div>' +
-      '<div class="fin"><span class="sw-dot" data-for="chain"></span><select class="f-chain" onchange="calc()">' + chainOptions() + '</select></div>' +
-    '</td>' +
     '<td class="price-cell"><small>—</small></td>' +
     '<td><button class="row-remove" onclick="removeRow(this)">×</button></td>';
   tbody.appendChild(tr);
@@ -2575,6 +2729,29 @@ document.querySelectorAll('.collab .go').forEach(function(el){ el.textContent = 
 var _perk = document.querySelector('.einav-perk .btn');
 if (_perk) _perk.textContent = 'למימוש ההטבה';
 applyI18n();
+</script>
+
+<div class="sticky-total" id="stickyTotal">
+  <div><span class="st-lbl">סה״כ להזמנה</span><span class="st-num" id="stNum">₪0</span></div>
+  <button class="btn btn-solid" onclick="reserveClick()">למימוש ההטבה</button>
+</div>
+<script>
+(function(){
+  var bar = document.getElementById('stickyTotal');
+  var num = document.getElementById('stNum');
+  var out = document.getElementById('totalOut');
+  if (!bar || !out) return;
+  function sync(){
+    var t = (out.innerText || '').split('\n')[0].trim();
+    num.textContent = t || '₪0';
+    var empty = !t || /^₪0$/.test(t.replace(/[\s,]/g,''));
+    var seen = window.scrollY > 260;
+    bar.classList.toggle('on', !empty && seen);
+  }
+  new MutationObserver(sync).observe(out, {childList:true, subtree:true, characterData:true});
+  addEventListener('scroll', sync, {passive:true});
+  sync();
+})();
 </script>
 </body>
 </html>
