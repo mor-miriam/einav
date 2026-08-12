@@ -711,9 +711,61 @@ html[dir=ltr] .spec-info{text-align:left}
     .lockup .lk-mark { height:28px; }
     .lockup .lk-name { font-size:14.5px; }
   }
+
+  /* ============================================================
+     התאמת מובייל מלאה
+     ============================================================ */
+  @media (max-width:900px) {
+    /* iOS לא יזום על שדות בגודל 16px ומעלה */
+    .quote select, .quote input, .coupon input, .modal input, .modal textarea,
+    .admin input, .admin select, .admin textarea { font-size:16px !important; }
+
+    /* שטחי נגיעה נוחים */
+    .quote select, .quote input { min-height:48px; padding:13px 14px; }
+    .btn { min-height:50px; }
+    .row-remove { min-width:44px; min-height:44px; font-size:22px; }
+    .add-row { min-height:54px; }
+    .nav-cta { padding:12px 20px; font-size:13.5px; }
+    .collab .code { padding:4px 12px; }
+
+    /* לוקאפ שלא נשבר */
+    .lockup { flex-wrap:nowrap; }
+    .hero { padding-inline:18px; }
+    .hero h1 { font-size:clamp(28px,8.2vw,40px); line-height:1.08; }
+    .hero-slogan { font-size:16px; margin:14px 0 10px; }
+
+    /* הטופס — כרטיסים במקום טבלה */
+    .config-card { background:transparent; box-shadow:none; padding:0; }
+    .summary { padding:22px 18px; }
+    .summary .total { font-size:32px; }
+
+    /* מרווח לסרגל הדביק */
+    #products { padding-bottom:90px; }
+    footer { padding-bottom:92px; }
+    .quote-meta { font-size:11.5px; padding:12px 0 0; }
+
+    /* מודאל */
+    .modal { padding:26px 18px; border-radius:18px; max-height:88vh; overflow-y:auto; }
+    .modal input { min-height:50px; }
+    .frow, .frow3 { grid-template-columns:1fr; }
+
+    /* פאנל הניהול במובייל */
+    .admin { width:100%; max-width:100%; }
+    .admin table { display:block; overflow-x:auto; }
+  }
+  @media (max-width:420px) {
+    .collab { font-size:11.5px; gap:6px; }
+    .lockup .lk-mark { height:24px; }
+    .lockup .lk-name { font-size:13px; }
+    .lockup { gap:12px; }
+    .summary .total { font-size:29px; }
+    .sticky-total .st-num { font-size:18px; }
+    .sticky-total .btn { padding:12px 18px; font-size:13.5px; }
+  }
 </style>
 </head>
 <body>
+<script>window.__MIRIAM_PAID = /[?&]paid=1/.test(location.search);</script>
 <div class="collab">
   <span>בשיתוף <b>עינב כהן</b></span>
   <span class="code">EINAV</span>
@@ -1184,7 +1236,8 @@ const PRICES_DEFAULT = /*PJSON*/{
  "installRate": 60,
  "measureFee": 150,
  "minCharge": 1,
- "vatRate": 18
+ "vatRate": 18,
+ "installMin": 250
 }/*PJSONEND*/;
 
 const CONTENT_DEFAULT = /*CJSON*/{
@@ -1362,9 +1415,10 @@ const CONTENT_DEFAULT = /*CJSON*/{
  "couponPct": "20",
  "quoteValidDays": "30",
  "leadSource": "שיתוף פעולה — עינב כהן",
- "instagramUrl": "https://www.instagram.com/miriam_house_of_design/",
- "phKey": "",
- "phHost": "https://eu.i.posthog.com"
+ "instagramUrl": "https://www.instagram.com/miriamhouseofdesign/",
+ "phKey": "phc_BgHjp5zchWHxcL4rctSYcbVRLLVhzNT4vkUQZmf6rBMQ",
+ "phHost": "https://eu.i.posthog.com",
+ "payApiUrl": "https://hook.eu2.make.com/a5h25ye4ft2azqjnam1byok1lupg5eqg"
 }/*CJSONEND*/;
 
 const PRICES_KEY = 'miriam-einav-prices-v1';
@@ -2462,6 +2516,8 @@ function buildOrder() {
     });
   }
   var install = items.length ? widthSum * (CFG.installRate || 0) : 0;
+  var minInst = (CFG.installMin === undefined ? 250 : CFG.installMin);
+  if (items.length && install < minInst) install = minInst;
   var measure = items.length ? (CFG.measureFee || 0) : 0;
   var netEx   = subtotalEx + install + measure;
   var vatRate = CFG.vatRate || 18;
@@ -2648,11 +2704,47 @@ function submitModal() {
 
     if (window.miriamTrack) miriamTrack('quote_submitted', { quoteNo:QUOTE_NO, total:Math.round(o.totalInc), items:o.items.length });
 
+    /* שמירת ההזמנה — תיפתח במאנדיי אחרי התשלום */
+    try {
+      localStorage.setItem('miriam-einav-pending', JSON.stringify({
+        quoteNo:QUOTE_NO, validUntil:QUOTE_VALID_UNTIL, coupon:COUPON_CODE, source:LEAD_SOURCE,
+        name:name, phone:phone, email:email, city:city, address:addr,
+        lines:lines, install:o.install, measure:o.measure, widthSum:o.widthSum,
+        subtotalEx:o.netEx, vatRate:o.vatRate, vat:o.vat, totalInc:o.totalInc,
+        savingInc:o.savingInc, quoteText:wtext
+      }));
+    } catch(e) {}
+
+    var deposit = CONTENT.payAmount || 400;
+
+    /* יצירת עמוד תשלום אישי ב-PayPlus דרך Make */
+    if (CONTENT.payApiUrl) {
+      btn.textContent = 'מכינים עמוד תשלום מאובטח…';
+      if (window.miriamTrack) miriamTrack('checkout_started', { quoteNo:QUOTE_NO, amount:deposit });
+      fetch(CONTENT.payApiUrl, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          amount: deposit, name:name, phone:phone, email:email,
+          orderRef: 'שיתוף פעולה עינב כהן · ' + name + ' · הצעה ' + QUOTE_NO
+        })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        if (j && j.link && j.link.indexOf('http') === 0) { window.location.href = j.link; return; }
+        throw new Error('no link');
+      })
+      .catch(function(){
+        if (CONTENT.payUrl) { window.location.href = CONTENT.payUrl; return; }
+        closeModal(); btn.disabled = false; btn.textContent = t('m_res_b');
+        alert('הצעת מחיר ' + QUOTE_NO + ' נשמרה על שמכם ותקפה עד ' + QUOTE_VALID_UNTIL + '.\n' +
+              'עמוד התשלום לא נטען כרגע — נחזור אליכם בוואטסאפ להשלמת השריון.');
+      });
+      return;
+    }
+
     closeModal();
     btn.disabled = false; btn.textContent = t('m_res_b');
-    alert('תודה! הצעת מחיר ' + QUOTE_NO + ' נפתחה על שמכם.\n\n' +
-          'תוך רגע תקבלו אותה בוואטסאפ לאישור, למספר ' + phone + '.\n' +
-          'ההצעה תקפה עד ' + QUOTE_VALID_UNTIL + '.');
+    alert('תודה! הצעת מחיר ' + QUOTE_NO + ' נפתחה על שמכם ותקפה עד ' + QUOTE_VALID_UNTIL + '.');
     return;
   }
 
@@ -2886,6 +2978,67 @@ applyI18n();
     if (t.classList.contains('btn-solid')) track('cta_click', { label: label });
     if (t.id === 'igLink') track('instagram_click');
   }, true);
+})();
+</script>
+
+<script>
+(function(){
+  /* ---------- שדה מינימום ההובלה בפאנל ---------- */
+  var baseRender = renderPricesPane, baseCollect = collectAdmin;
+  renderPricesPane = function(){ baseRender();
+    var el = document.getElementById('adm-install-min');
+    if (el) el.value = (CFG.installMin === undefined ? 250 : CFG.installMin); };
+  collectAdmin = function(){ baseCollect();
+    var el = document.getElementById('adm-install-min');
+    if (el) CFG.installMin = parseFloat(el.value) || 0; };
+
+  /* ---------- חזרה מ-PayPlus עם ?paid=1 → פתיחת ההזמנה במאנדיי ---------- */
+  if (window.__MIRIAM_PAID) {
+    var order = null;
+    try { order = JSON.parse(localStorage.getItem('miriam-einav-pending')); } catch(e) {}
+    try { history.replaceState(null, '', location.pathname); } catch(e) {}
+    if (order) {
+      var deposit = CONTENT.payAmount || 400;
+      var ol = (order.lines || []).slice();
+      ol.push({ product:'מקדמה ששולמה (מתקזזת מההזמנה)', room:'', dims:'', qty:1, priceInc:deposit, notes:'' });
+      sendToMake({
+        type:'order', source:order.source, influencer:'עינב כהן', coupon:order.coupon,
+        quoteNo:order.quoteNo, validUntil:order.validUntil,
+        name:order.name, phone:order.phone, email:order.email,
+        city:order.city, address:order.address,
+        waPhone:(function(p){var d=String(p||'').replace(/\D/g,'');
+          if(d.indexOf('972')===0) return d; if(d.indexOf('0')===0) return '972'+d.slice(1); return d;})(order.phone),
+        deposit:deposit, paid:true,
+        installEx:Math.round(order.install), measureEx:Math.round(order.measure),
+        subtotalEx:Math.round(order.subtotalEx), vat:Math.round(order.vat),
+        totalInc:Math.round(order.totalInc), savingInc:Math.round(order.savingInc),
+        lines:ol, quoteText:order.quoteText
+      }).catch(function(){});
+      try { localStorage.removeItem('miriam-einav-pending'); } catch(e) {}
+      if (window.miriamTrack) miriamTrack('deposit_paid', { quoteNo:order.quoteNo, amount:deposit, total:Math.round(order.totalInc) });
+      setTimeout(function(){
+        alert('תודה! המקדמה התקבלה והמחיר שלכם שוריין.\n\n' +
+              'הצעה ' + order.quoteNo + ' · תקפה עד ' + order.validUntil + '.\n' +
+              'נציגה שלנו תיצור איתכם קשר לתיאום המדידה בבית ובחירת הבד.');
+      }, 400);
+    }
+  }
+
+  /* ---------- הודעת המקדמה במודאל ---------- */
+  var baseOpen = openModal;
+  openModal = function(kind){
+    baseOpen(kind);
+    if (kind !== 'visit') {
+      var box = document.getElementById('payBox');
+      var amt = document.getElementById('payAmt');
+      var hint= document.getElementById('apHint');
+      if (box && amt) {
+        amt.textContent = '₪' + (CONTENT.payAmount || 400);
+        box.style.display = '';
+        if (hint) hint.style.display = '';
+      }
+    }
+  };
 })();
 </script>
 </body>
