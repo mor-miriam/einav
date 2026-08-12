@@ -1165,20 +1165,51 @@ html[dir=ltr] .spec-info{text-align:left}
    ============================================================ */
 const PRICES_DEFAULT = /*PJSON*/{
  "products": {
-  "screen": {
-   "label": "וילונות גלילה הצללה",
-   "en": "Roller Screen",
-   "unit": "sqm",
-   "price": 360,
-   "origPrice": 450,
-   "hasElectric": true
-  },
   "fabric": {
    "label": "וילונות הסטה בד דקורטיבי",
    "en": "Decorative Drapery",
    "unit": "rm",
    "price": 720,
-   "origPrice": 900,
+   "origPrice": 800,
+   "hasElectric": true
+  },
+  "vertical": {
+   "label": "וילונות הסטה בד האפלה",
+   "en": "Blackout Drapery",
+   "unit": "rm",
+   "price": 680,
+   "origPrice": 750,
+   "hasElectric": true
+  },
+  "panel": {
+   "label": "רומאי רך",
+   "en": "Roman Shades",
+   "unit": "sqm",
+   "price": 600,
+   "origPrice": 720,
+   "hasElectric": true
+  },
+  "p1786522259775": {
+   "label": "רומאי קלאסי",
+   "unit": "sqm",
+   "price": 600,
+   "origPrice": 700,
+   "hasElectric": true
+  },
+  "venetian": {
+   "label": "תריס ונציאני עץ 50 מ״מ",
+   "en": "Wooden Venetian",
+   "unit": "sqm",
+   "price": 560,
+   "origPrice": 700,
+   "hasElectric": false
+  },
+  "screen": {
+   "label": "וילונות גלילה הצללה",
+   "en": "Roller Screen",
+   "unit": "sqm",
+   "price": 360,
+   "origPrice": 480,
    "hasElectric": true
   },
   "blackout": {
@@ -1186,7 +1217,7 @@ const PRICES_DEFAULT = /*PJSON*/{
    "en": "Blackout Roller",
    "unit": "sqm",
    "price": 376,
-   "origPrice": 470,
+   "origPrice": 480,
    "hasElectric": true
   },
   "dblroller": {
@@ -1197,36 +1228,12 @@ const PRICES_DEFAULT = /*PJSON*/{
    "origPrice": 600,
    "hasElectric": true
   },
-  "vertical": {
-   "label": "וילונות הסטה בד האפלה",
-   "en": "Blackout Drapery",
-   "unit": "rm",
-   "price": 680,
-   "origPrice": 850,
-   "hasElectric": true
-  },
-  "panel": {
-   "label": "וילונות רומאיים",
-   "en": "Roman Shades",
-   "unit": "sqm",
-   "price": 600,
-   "origPrice": 750,
-   "hasElectric": true
-  },
   "duette": {
    "label": "וילונות דואט / פליסה",
    "en": "Duette / Pleated",
    "unit": "sqm",
    "price": 700,
-   "origPrice": 875,
-   "hasElectric": true
-  },
-  "venetian": {
-   "label": "תריס ונציאני עץ",
-   "en": "Wooden Venetian",
-   "unit": "sqm",
-   "price": 560,
-   "origPrice": 700,
+   "origPrice": 750,
    "hasElectric": true
   }
  },
@@ -1259,7 +1266,7 @@ const CONTENT_DEFAULT = /*CJSON*/{
  "srv3t": "התקנה מקצועית",
  "srv3p": "צוות ההתקנה שלנו מגיע, מתקין ומשאיר בית נקי. אחריות מלאה על המוצר ועל ההתקנה",
  "aboutTitle": "החלון שלכם, היצירה שלנו",
- "aboutLead": "בית עיצוב ישראלי המתמחה בווילונות ופתרונות הצללה בהתאמה אישית, הממשיך את המסורת והניסיון של וילונות מרים אורגון. אנחנו משלבים עיצוב מוקפד, טכנולוגיה מתקדמת וחומרי גלם מהאיכות הגבוהה ביותר — לבתים פרטיים, מלונות ופרויקטים אדריכליים.",
+ "aboutLead": "בית עיצוב ישראלי המתמחה בווילונות ופתרונות הצללה בהתאמה אישית, הממשיך את המסורת והניסיון של וילונות מרים . אנחנו משלבים עיצוב מוקפד, טכנולוגיה מתקדמת וחומרי גלם מהאיכות הגבוהה ביותר — לבתים פרטיים, מלונות ופרויקטים אדריכליים.",
  "check1": "איכות ללא פשרות — תפירה מקצועית וגימור מושלם, עמידות לאורך שנים",
  "check2": "ייצור כחול־לבן — כל מוצרינו מיוצרים בישראל בטכנולוגיות חדשניות",
  "check3": "מחיר שקוף — מה שאתם רואים במחשבון זה המחיר, כולל מע״מ, הובלה והתקנה",
@@ -1311,7 +1318,7 @@ const CONTENT_DEFAULT = /*CJSON*/{
   },
   {
    "src": "https://www.miriam.co.il/cdn/shop/files/Cou_MB10_SCR-3005-08.jpg?v=1773682226&width=900",
-   "cap": "וילונות גלילה"
+   "cap": "וילונות גלילה רשת"
   },
   {
    "src": "https://www.miriam.co.il/cdn/shop/files/NAXOS-0200-Window-Double-Roller.jpg?v=1775390724&width=900",
@@ -1407,7 +1414,7 @@ const CONTENT_DEFAULT = /*CJSON*/{
  "einavTitle": "הבית של עינב",
  "einavQuote": "תפרו לי בהתאמה אישית, הגיעו למדוד, התקינו — וזה שינה לי את כל הסלון.",
  "einavName": "עינב כהן",
- "einavHandle": "@einavcohen",
+ "einavHandle": "@einav_cohen1",
  "einavText": "ההטבה שעינב ביקשה עבורכם: 20% הנחה עם הקוד EINAV, על כל הוילונות וההצללה.",
  "einavImg": "https://www.miriam.co.il/cdn/shop/files/WhatsApp_2024-08-25_18.02.06_94cc69a5.jpg?v=1725979388&width=900",
  "einavGallery": [],
@@ -1418,7 +1425,8 @@ const CONTENT_DEFAULT = /*CJSON*/{
  "instagramUrl": "https://www.instagram.com/miriamhouseofdesign/",
  "phKey": "phc_BgHjp5zchWHxcL4rctSYcbVRLLVhzNT4vkUQZmf6rBMQ",
  "phHost": "https://eu.i.posthog.com",
- "payApiUrl": "https://hook.eu2.make.com/xvn41pqjug9xnjw6fwjsrxtlyl9nht0c"
+ "payApiUrl": "https://hook.eu2.make.com/xvn41pqjug9xnjw6fwjsrxtlyl9nht0c",
+ "heroImg": ""
 }/*CJSONEND*/;
 
 const PRICES_KEY = 'miriam-einav-prices-v1';
