@@ -548,7 +548,7 @@ html[dir=ltr] .spec-info{text-align:left}
   .hero { background:var(--cream); padding-bottom:64px; }
   .hero-kicker { background:transparent; color:var(--muted); border:1px solid var(--hair);
     font-size:11.5px; font-weight:400; letter-spacing:.26em; padding:8px 20px; margin-bottom:34px; }
-  .hero h1 { font-size:clamp(38px,5.2vw,68px); font-weight:400; letter-spacing:-.025em; line-height:1.04; }
+  .hero h1 { font-size:clamp(34px,4.5vw,58px); font-weight:400; letter-spacing:-.025em; line-height:1.06; }
   .hero-slogan { font-size:clamp(16px,1.7vw,19px); font-weight:400; color:var(--brown);
     letter-spacing:.01em; margin:20px 0 14px; }
   .hero p.sub { font-size:16px; color:var(--muted); font-weight:300; margin-bottom:38px; }
@@ -691,9 +691,9 @@ html[dir=ltr] .spec-info{text-align:left}
   .logo-side img.brandmark { height:38px; width:auto; display:block; }
   .lockup { display:inline-flex; align-items:center; justify-content:center; gap:22px; margin-bottom:26px;
     direction:ltr; }
-  .lockup .lk-mark { height:34px; width:auto; display:block; }
-  .lockup .lk-x { font-size:17px; font-weight:300; color:var(--muted); line-height:1; }
-  .lockup .lk-name { font-family:'Archivo',sans-serif; font-weight:800; font-size:17px; line-height:1.02;
+  .lockup .lk-mark { height:42px; width:auto; display:block; }
+  .lockup .lk-x { font-size:20px; font-weight:300; color:var(--muted); line-height:1; }
+  .lockup .lk-name { font-family:'Archivo',sans-serif; font-weight:800; font-size:21px; line-height:1.02;
     letter-spacing:.02em; color:var(--ink); text-align:left; text-transform:uppercase; }
   .lockup-sub { font-size:11.5px; letter-spacing:.3em; color:var(--muted); text-transform:none; margin-bottom:26px; }
   .lockup-sub:empty { display:none; }
@@ -708,8 +708,8 @@ html[dir=ltr] .spec-info{text-align:left}
   @media (max-width:900px) {
     .logo-side img.brandmark { height:30px; }
     .lockup { gap:16px; margin-bottom:20px; }
-    .lockup .lk-mark { height:28px; }
-    .lockup .lk-name { font-size:14.5px; }
+    .lockup .lk-mark { height:34px; }
+    .lockup .lk-name { font-size:17px; }
   }
 
   /* ============================================================
@@ -731,7 +731,7 @@ html[dir=ltr] .spec-info{text-align:left}
     /* לוקאפ שלא נשבר */
     .lockup { flex-wrap:nowrap; }
     .hero { padding-inline:18px; }
-    .hero h1 { font-size:clamp(28px,8.2vw,40px); line-height:1.08; }
+    .hero h1 { font-size:clamp(26px,7.4vw,36px); line-height:1.1; }
     .hero-slogan { font-size:16px; margin:14px 0 10px; }
 
     /* הטופס — כרטיסים במקום טבלה */
@@ -755,8 +755,8 @@ html[dir=ltr] .spec-info{text-align:left}
   }
   @media (max-width:420px) {
     .collab { font-size:11.5px; gap:6px; }
-    .lockup .lk-mark { height:24px; }
-    .lockup .lk-name { font-size:13px; }
+    .lockup .lk-mark { height:29px; }
+    .lockup .lk-name { font-size:15px; }
     .lockup { gap:12px; }
     .summary .total { font-size:29px; }
     .sticky-total .st-num { font-size:18px; }
@@ -769,7 +769,7 @@ html[dir=ltr] .spec-info{text-align:left}
 <div class="collab">
   <span>בשיתוף <b>עינב כהן</b></span>
   <span class="code">EINAV</span>
-  <span class="c-long">20% הנחה על כל הוילונות וההצללה</span>
+  <span class="c-long">20% הנחה על כל סוגי הוילונות</span>
   <span class="c-short">20% הנחה</span>
   <span class="go c-long" onclick="go('config')">לבניית הצעת מחיר ›</span>
 </div>
@@ -2404,6 +2404,7 @@ Object.assign(I18N.he, {
   empty_sum:'בחרו מוצר והזינו מידות כדי לראות מחיר',
   save_line:'חיסכון עם קוד {c}',
   vat_of:'מתוכו מע״מ ({p}%)',
+  inst_min:'הובלה והתקנה (חיוב מינימלי)',
   sum_note:'המחיר מבוסס על המידות שהזנתם וכפוף למדידה מקצועית בשטח ולבחירת הבד באולם התצוגה. פערי מידה או בחירת בד מקבוצת מחיר אחרת יוצגו לאישורכם לפני הייצור.',
   quote_meta:'הצעת מחיר מס׳ <b>{n}</b> · תקפה עד <b>{d}</b> ({v} ימים) · בשיתוף עינב כהן, קוד {c}',
   coupon_ok:'הקוד {c} פעיל — {p}% הנחה מחירי המחירון',
@@ -2517,13 +2518,15 @@ function buildOrder() {
   }
   var install = items.length ? widthSum * (CFG.installRate || 0) : 0;
   var minInst = (CFG.installMin === undefined ? 250 : CFG.installMin);
-  if (items.length && install < minInst) install = minInst;
+  var installMinApplied = false;
+  if (items.length && install < minInst) { install = minInst; installMinApplied = true; }
   var measure = items.length ? (CFG.measureFee || 0) : 0;
   var netEx   = subtotalEx + install + measure;
   var vatRate = CFG.vatRate || 18;
   var vat     = netEx * vatRate / 100;
   return { items:items, mode:MODE, subtotalEx:subtotalEx, listEx:listEx, install:install, measure:measure,
-           widthSum:widthSum, netEx:netEx, vatRate:vatRate, vat:vat, totalInc:netEx + vat,
+           widthSum:widthSum, installMinApplied:installMinApplied,
+           netEx:netEx, vatRate:vatRate, vat:vat, totalInc:netEx + vat,
            savingInc: Math.max(0, (listEx - subtotalEx) * (1 + vatRate/100)) };
 }
 
@@ -2603,7 +2606,8 @@ function calc() {
     return '<div><span>' + desc + '</span><span>'
       + (incList > inc + 0.5 ? '<span class="orig">' + fmt(incList) + '</span>&nbsp;' : '') + fmt(inc) + '</span></div>';
   });
-  L.push('<div class="inst"><span>' + t('inst_line').replace('{m}', o.widthSum.toFixed(1)) + '</span><span>' + fmt(o.install*vr) + '</span></div>');
+  L.push('<div class="inst"><span>' + (o.installMinApplied ? t('inst_min')
+            : t('inst_line').replace('{m}', o.widthSum.toFixed(1))) + '</span><span>' + fmt(o.install*vr) + '</span></div>');
   L.push('<div><span>' + t('measure_line') + '</span><span>' + fmt(o.measure*vr) + '</span></div>');
   if (o.savingInc > 0.5)
     L.push('<div class="save"><span>' + t('save_line').replace('{c}', COUPON_CODE) + '</span><span>−' + fmt(o.savingInc) + '</span></div>');
@@ -2852,12 +2856,12 @@ Object.assign(I18N.he, {
   nav_quote:'למימוש ההטבה', nav_cta:'למימוש ההטבה', hero_cta1:'למימוש ההטבה',
   cfg_kicker:'מימוש ההטבה', cfg_title:'למימוש ההטבה',
   cfg_lead:'בחרו מוצר, חדר ומידות — והמחיר עם ההטבה מתעדכן על המסך. כולל מע״מ, הובלה, התקנה ומדידה מקצועית.',
-  cta_reserve:'למימוש ההטבה',
+  cta_reserve:'לשריון ההזמנה',
   cta_sub:'ההטבה תישלח אליכם לוואטסאפ ותישמר אצלנו במערכת. אחרי זה נשאר רק להגיע לאולם התצוגה, לבחור בד ולאשר.',
-  m_res_t:'מימוש ההטבה', m_res_b:'שלחו לי את ההצעה לוואטסאפ',
-  m_res_x:'השאירו פרטים ונפתח לכם הצעת מחיר. היא תישלח אליכם לוואטסאפ לאישור, ואחריו נתאם מדידה ובחירת בד.',
+  m_res_t:'שריון ההזמנה', m_res_b:'לתשלום המקדמה ושריון המחיר',
+  m_res_x:'משלימים פרטים ומשלמים מקדמה של 400 ₪ — המחיר שוריין. המקדמה מתקזזת מההזמנה, ומכאן נתאם מדידה בבית ובחירת בד באולם התצוגה.',
   sum_note:'המחיר לפי המידות שהזנתם, וכפוף למדידה בשטח ולבחירת הבד באולם התצוגה.',
-  cta_sub:'',
+  cta_sub:'מקדמה של 400 ₪ משריינת את המחיר ומתקזזת מההזמנה.',
   vid_kicker:'', vid_title:'', vid_lead:''
 });
 /* אין גרסת אנגלית — הדף עברית בלבד */
@@ -3014,6 +3018,32 @@ applyI18n();
         totalInc:Math.round(order.totalInc), savingInc:Math.round(order.savingInc),
         lines:ol, quoteText:order.quoteText
       }).catch(function(){});
+      /* מייל התראה: הזמנה חדשה עם מקדמה */
+      var _cc = [CONTENT.mondayEmail, CONTENT.quotesEmail].filter(Boolean).join(',');
+      var _detail = (order.lines || []).map(function(l,i){
+            return (i+1) + ') ' + l.product + (l.room ? ' · ' + l.room : '') +
+                   (l.dims ? ' · ' + l.dims : '') + (l.qty ? ' · כמות ' + l.qty : '') +
+                   ' — ₪' + Math.round(l.priceInc).toLocaleString('he-IL'); }).join('\n')
+          + '\n\nהובלה והתקנה: ₪' + Math.round(order.install * (1 + order.vatRate/100)).toLocaleString('he-IL')
+          + '\nמדידה מקצועית: ₪' + Math.round(order.measure * (1 + order.vatRate/100)).toLocaleString('he-IL')
+          + '\nחיסכון עם קוד ' + order.coupon + ': −₪' + Math.round(order.savingInc).toLocaleString('he-IL')
+          + '\nסה״כ ההזמנה: ₪' + Math.round(order.totalInc).toLocaleString('he-IL') + ' (כולל מע״מ)'
+          + '\nמקדמה ששולמה: ₪' + deposit + ' — מתקזזת מההזמנה'
+          + '\nיתרה לתשלום: ₪' + Math.round(order.totalInc - deposit).toLocaleString('he-IL');
+      fetch('https://formsubmit.co/ajax/' + encodeURIComponent(CONTENT.leadEmail || 'office@miriam.co.il'), {
+        method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body: JSON.stringify(Object.assign({
+          _subject: 'הזמנה חדשה · שולמה מקדמה ₪' + deposit + ' — ' + order.name + ' · עינב כהן',
+          'שם מלא': order.name, 'טלפון': order.phone, 'אימייל': order.email || '-',
+          'כתובת': order.address || '-', 'עיר': order.city || '-',
+          'מס׳ הצעה': order.quoteNo, 'תוקף': order.validUntil,
+          'קוד הטבה': order.coupon,
+          'סטטוס': 'שולמה מקדמה ₪' + deposit + ' — לשריון מחיר ולתיאום מדידה',
+          'פירוט ההזמנה': _detail,
+          'מקור': order.source
+        }, _cc ? {_cc:_cc} : {}))
+      }).catch(function(){});
+
       try { localStorage.removeItem('miriam-einav-pending'); } catch(e) {}
       if (window.miriamTrack) miriamTrack('deposit_paid', { quoteNo:order.quoteNo, amount:deposit, total:Math.round(order.totalInc) });
       setTimeout(function(){
