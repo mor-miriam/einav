@@ -1070,9 +1070,9 @@ html[dir=ltr] .spec-info{text-align:left}
   </div>
 
   <div class="apane on" id="t-prices">
-    <p style="font-size:12.5px;color:var(--gray);margin:0 0 12px;line-height:1.6;background:#faf7f2;border:1px solid var(--line);border-radius:8px;padding:10px 12px">מזינים כאן רק את <b>מחיר המחירון (לפני מע״מ)</b> — המחיר המלא לפני הנחה. עמודת «אחרי הנחה» מחושבת אוטומטית: הנחת <b>20% של קוד EINAV</b> יורדת מהמחירון לבד. המע״מ מתווסף אוטומטית בסיכום ההזמנה (כמו בכיכר).</p>
+    <p style="font-size:12.5px;color:var(--gray);margin:0 0 12px;line-height:1.6;background:#faf7f2;border:1px solid var(--line);border-radius:8px;padding:10px 12px">מזינים כאן רק את <b>מחיר המחירון (כולל מע״מ)</b> — המחיר המלא לפני הנחה. עמודת «אחרי הנחה» מחושבת אוטומטית: הנחת <b>20% של קוד EINAV</b> יורדת מהמחירון לבד. כל הסכומים בפאנל כוללים מע״מ — בדיוק מה שהלקוח רואה ומשלם.</p>
     <table>
-      <thead><tr><th>מוצר</th><th style="width:92px">חיוב לפי</th><th style="width:82px">אחרי הנחה ₪<br><span style="font-weight:400;font-size:10px;color:#8B8179">(אוטומטי)</span></th><th style="width:72px" title="מחיר המחירון המלא, לפני מע״מ — כאן מזינים">מחיר מחירון ₪<br><span style="font-weight:400;font-size:10px;color:#8B8179">(לפני מע״מ)</span></th><th style="width:56px;text-align:center">חשמלי?</th><th style="width:32px"></th></tr></thead>
+      <thead><tr><th>מוצר</th><th style="width:92px">חיוב לפי</th><th style="width:82px">אחרי הנחה ₪<br><span style="font-weight:400;font-size:10px;color:#8B8179">(אוטומטי)</span></th><th style="width:72px" title="מחיר המחירון המלא, כולל מע״מ — כאן מזינים">מחיר מחירון ₪<br><span style="font-weight:400;font-size:10px;color:#8B8179">(כולל מע״מ)</span></th><th style="width:56px;text-align:center">חשמלי?</th><th style="width:32px"></th></tr></thead>
       <tbody id="adminRows"></tbody>
     </table>
     <h4>הוספת מוצר חדש</h4>
@@ -1080,7 +1080,7 @@ html[dir=ltr] .spec-info{text-align:left}
       <input type="text" id="np-name" placeholder="שם המוצר">
       <select id="np-unit"><option value="sqm">מ״ר</option><option value="rm">מטר רץ</option></select>
       <input type="number" id="np-price" style="display:none">
-      <input type="number" id="np-orig" placeholder="מחיר מחירון ₪ (לפני מע״מ)" min="0" title="מחיר המחירון המלא לפני מע״מ — ההנחה תרד אוטומטית">
+      <input type="number" id="np-orig" placeholder="מחיר מחירון ₪ (כולל מע״מ)" min="0" title="מחיר המחירון המלא כולל מע״מ — ההנחה תרד אוטומטית">
       <label style="display:flex;align-items:center;gap:6px;font-size:13px;white-space:nowrap"><input type="checkbox" id="np-electric" style="width:auto" checked> חשמלי</label>
       <button onclick="addProduct()">+ הוספה</button>
     </div>
@@ -1091,8 +1091,8 @@ html[dir=ltr] .spec-info{text-align:left}
       <div><label>מסילה חשמלית — ₪ למטר רץ</label><input type="number" id="adm-track-rm" min="0"></div>
     </div>
     <div class="global" style="grid-template-columns:1fr 1fr">
-      <div><label>הובלה והתקנה — ₪ למטר רוחב (לפני מע״מ)</label><input type="number" id="adm-install" min="0"></div>
-      <div><label>מדידה מקצועית — ₪ קבוע להזמנה (לפני מע״מ)</label><input type="number" id="adm-measure" min="0"></div>
+      <div><label>הובלה והתקנה — ₪ למטר רוחב (כולל מע״מ)</label><input type="number" id="adm-install" min="0"></div>
+      <div><label>מדידה מקצועית — ₪ קבוע להזמנה (כולל מע״מ)</label><input type="number" id="adm-measure" min="0"></div>
       <div><label>חיוב מינימלי לפריט (מטר / מ״ר)</label><input type="number" id="adm-min" min="0" step="0.1"></div>
       <div><label>מע״מ %</label><input type="number" id="adm-vat" min="0" step="0.5"></div>
     </div>
@@ -1268,11 +1268,11 @@ const PRICES_DEFAULT = /*PJSON*/{
  "motorSqm": 1750,
  "motorRm": 1000,
  "trackRm": 190,
- "installRate": 60,
- "measureFee": 150,
+ "installRate": 65,
+ "measureFee": 200,
  "minCharge": 1,
  "vatRate": 18,
- "installMin": 250
+ "installMin": 300
 }/*PJSONEND*/;
 
 const CONTENT_DEFAULT = /*CJSON*/{
@@ -1435,7 +1435,7 @@ const CONTENT_DEFAULT = /*CJSON*/{
  "visitImg": "https://www.miriam.co.il/cdn/shop/files/1.-showroom.jpg?width=1400",
  "termsTitle": "תקנון ותנאי ההטבה",
  "termsText": "1. כללי\nהאתר מופעל על ידי וילונות מרים עזרא בע״מ, ח.פ 516573516 — MIRIAM House of Design (להלן: «החברה»). השימוש בדף ובמחשבון ההטבה כפוף לתנאים אלה.\n\n2. ההטבה\nההטבה ניתנת במסגרת שיתוף הפעולה עם עינב כהן, למי שמגיע דרך דף זה ומשתמש בקוד ההטבה EINAV. ההטבה היא 20% הנחה ממחיר המחירון של החברה על מוצרי הוילונות וההצללה המופיעים במחשבון. ההטבה אינה ניתנת לכפל מבצעים, הנחות או שוברים אחרים.\n\n3. הבד הכלול במחיר\nהמחיר המוצג במחשבון כולל בד בשווי של עד 120 ₪ למטר, מתוך קולקציית MIRIAM — ומתוך מבחר הבדים שעינב בחרה. בחירת בד מקבוצת מחיר גבוהה יותר אפשרית בתוספת תשלום, שתוצג לכם מראש ובכתב לפני הייצור.\n\n4. הצעת המחיר ותוקפה\nהמחיר המתקבל במחשבון הוא הצעת מחיר ראשונית המבוססת על המידות שהזנתם. הצעת המחיר תקפה ל-30 ימים ממועד הפקתה, בכפוף למלאי ולזמינות הבד שייבחר.\n\n5. מדידה ואישור סופי\nהמחיר הסופי ייקבע לאחר מדידה מקצועית בבית הלקוח ובחירת הבד. פערים בין המידות שהוזנו למידות בפועל, בחירת בד מקבוצת מחיר אחרת או דרישות התקנה מיוחדות עשויים לשנות את המחיר — ותמיד יוצגו לכם לאישור לפני תחילת הייצור.\n\n6. מועד אספקה\nזמן האספקה הוא עד 30 ימי עסקים ממועד המדידה בבית הלקוח, בכפוף לאישור הצעת המחיר הסופית ולבחירת הבד. עיכובים הנובעים משינויים מצד הלקוח, מזמינות בד או מכוח עליון אינם נמנים במניין הימים.\n\n7. תשלום והזמנה\nההזמנה נכנסת לייצור לאחר אישור הצעת המחיר הסופית ותשלום כמוסכם. הוילונות מיוצרים בהתאמה אישית ולכן, בהתאם לתקנות הגנת הצרכן, לא ניתן לבטל הזמנה לאחר תחילת הייצור.\n\n8. הובלה, התקנה ומדידה\nהמחיר במחשבון כולל הובלה והתקנה לפי התעריף המוצג, וכן דמי מדידה מקצועית. אזורים מרוחקים, התקנה בגובה חריג או עבודות נגרות וחשמל נלוות עשויות להיות בתוספת תשלום שתוצג מראש.\n\n9. אחריות\nהחברה מעניקה אחריות של 12 חודשים על המוצר ועל ההתקנה, בכפוף לשימוש סביר ולהוראות התחזוקה. האחריות אינה חלה על נזק שנגרם משימוש לא נכון, ניקוי לא מתאים או פגיעה מכוונת.\n\n10. פרטיות\nהפרטים שתמסרו ישמשו את החברה לצורך מתן שירות, הפקת הצעת מחיר ויצירת קשר בלבד, ולא יועברו לצדדים שלישיים למעט ספקי שירות הפועלים מטעם החברה. בדף פועלת מערכת אנליטיקה לשיפור חוויית השימוש.\n\n11. שונות\nהחברה רשאית לעדכן את המחירים ואת תנאי ההטבה בכל עת, ללא פגיעה בהצעות מחיר שהופקו ותקפות.\n\nיצירת קשר: office@miriam.co.il · 03-5509795",
- "payAmount": 1,
+ "payAmount": 400,
  "payUrl": "",
  "videoUrl": "",
  "einavKicker": "",
@@ -2511,9 +2511,10 @@ function discPct(){ var v = parseFloat((typeof COUPON_PCT !== 'undefined' && COU
 /* המחיר שמוזן בפאנל הוא מחיר המחירון (כולל מע״מ). ההנחה מחושבת אוטומטית מהמחירון. */
 function listPriceInc(p){ return (p.origPrice && p.origPrice > 0) ? p.origPrice : p.price; }
 function effPriceInc(p){ return COUPON_OK ? (listPriceInc(p) * (1 - discPct()/100)) : listPriceInc(p); }
-/* מודל כיכר: המחירים בפאנל הם לפני מע״מ; המע״מ מתווסף פעם אחת בסיכום */
-function listPrice(p){ return listPriceInc(p); }
-function effPrice(p){ return effPriceInc(p); }
+/* כל המחירים בפאנל כוללים מע״מ (לקוחות פרטיים) —
+   פנימית מחשבים לפני מע״מ, והתצוגה ללקוח כולה כולל מע״מ */
+function listPrice(p){ return listPriceInc(p) / vatF(); }
+function effPrice(p){ return effPriceInc(p) / vatF(); }
 function onCouponInput(){
   var el = document.getElementById('couponInput');
   var st = document.getElementById('couponState');
@@ -2536,7 +2537,7 @@ function buildOrder() {
       var colorId = tr.querySelector('.s-color').value, chainId = tr.querySelector('.s-chain').value;
       var co = PROFILE_COLORS.find(function(o){return o.id===colorId;});
       var ch = CHAIN_OPTIONS.find(function(o){return o.id===chainId;});
-      var motor = (chainId==='motor' && p.hasElectric) ? (p.unit==='rm' ? CFG.motorRm : CFG.motorSqm) : 0;
+      var motor = (chainId==='motor' && p.hasElectric) ? (p.unit==='rm' ? CFG.motorRm : CFG.motorSqm) / vatF() : 0;
       var ex = q*effPrice(p) + motor, exList = q*listPrice(p) + motor;
       subtotalEx += ex; listEx += exList;
       if (p.unit === 'rm') widthSum += q;
@@ -2558,7 +2559,7 @@ function buildOrder() {
       var ch = CHAIN_OPTIONS.find(function(o){return o.id===chainId;});
       var area = p.unit==='rm' ? Math.max(w/100, CFG.minCharge) : Math.max((w/100)*(h/100), CFG.minCharge);
       var motor = (chainId==='motor' && p.hasElectric)
-        ? (p.unit==='rm' ? (w/100)*CFG.trackRm + CFG.motorRm : CFG.motorSqm) : 0;
+        ? (p.unit==='rm' ? (w/100)*CFG.trackRm + CFG.motorRm : CFG.motorSqm) / vatF() : 0;
       var ex = (area*effPrice(p) + motor) * qty, exList = (area*listPrice(p) + motor) * qty;
       subtotalEx += ex; listEx += exList; widthSum += (w/100)*qty;
       items.push({ tr:tr, kind:'window', product:prodLabel(p), room:t('rooms')[roomKey],
@@ -2567,12 +2568,13 @@ function buildOrder() {
         notes:(motor > 0 ? 'הפעלה: חשמלי' : 'הפעלה: ידני') });
     });
   }
-  /* הובלה, התקנה ומדידה — לפני מע״מ (מודל כיכר); המע״מ מתווסף בסיכום */
-  var install = items.length ? widthSum * (CFG.installRate || 0) : 0;
-  var minInst = (CFG.installMin === undefined ? 250 : CFG.installMin);
+  /* הובלה, התקנה ומדידה — מוזנים כולל מע״מ; ממירים פנימית ללא מע״מ */
+  var _vf = vatF();
+  var install = items.length ? widthSum * ((CFG.installRate || 0) / _vf) : 0;
+  var minInst = (CFG.installMin === undefined ? 300 : CFG.installMin) / _vf;
   var installMinApplied = false;
   if (items.length && install < minInst) { install = minInst; installMinApplied = true; }
-  var measure = items.length ? (CFG.measureFee || 0) : 0;
+  var measure = items.length ? ((CFG.measureFee || 0) / _vf) : 0;
   var netEx   = subtotalEx + install + measure;
   var vatRate = CFG.vatRate || 18;
   var vat     = netEx * vatRate / 100;
@@ -2639,8 +2641,9 @@ function calc() {
   document.querySelectorAll('#quoteTable td.price-cell').forEach(function(td){ td.innerHTML = '<small>—</small>'; });
   o.items.forEach(function(it){
     var cell = it.tr && it.tr.querySelector('td.price-cell'); if (!cell) return;
-    cell.innerHTML = (it.exList > it.ex + 0.5 ? '<span class="orig">' + fmt(it.exList) + '</span>&nbsp;' : '')
-      + fmt(it.ex) + '<small>' + t('ex_vat') + '</small>';
+    var inc = it.ex*vr, incList = it.exList*vr;
+    cell.innerHTML = (incList > inc + 0.5 ? '<span class="orig">' + fmt(incList) + '</span>&nbsp;' : '')
+      + fmt(inc) + '<small>' + t('inc_vat') + '</small>';
   });
 
   var box = document.getElementById('summaryLines');
@@ -2661,20 +2664,20 @@ function calc() {
   }
 
   var L = o.items.map(function(it){
+    var inc = it.ex*vr, incList = it.exList*vr;
     var desc = it.kind==='sqm'
       ? it.product + ' · ' + it.sqm + ' ' + it.unitLabel
       : it.product + ' · ' + it.room + ' · <bdi dir="ltr">' + it.dims + '</bdi>' + ' ס״מ'
         + (it.motor > 0 ? ' · חשמלי' : '');
     return '<div><span>' + desc + '</span><span>'
-      + (it.exList > it.ex + 0.5 ? '<span class="orig">' + fmt(it.exList) + '</span>&nbsp;' : '') + fmt(it.ex) + '</span></div>';
+      + (incList > inc + 0.5 ? '<span class="orig">' + fmt(incList) + '</span>&nbsp;' : '') + fmt(inc) + '</span></div>';
   });
   L.push('<div class="inst"><span>' + (o.installMinApplied ? t('inst_min')
-            : t('inst_line').replace('{m}', o.widthSum.toFixed(1))) + '</span><span>' + fmt(o.install) + '</span></div>');
-  L.push('<div><span>' + t('measure_line') + '</span><span>' + fmt(o.measure) + '</span></div>');
-  if (o.listEx > o.subtotalEx + 0.5)
-    L.push('<div class="save"><span>' + t('save_line').replace('{c}', COUPON_CODE) + '</span><span>−' + fmt(o.listEx - o.subtotalEx) + '</span></div>');
-  L.push('<div class="inst"><span>' + t('sub_ex') + '</span><span>' + fmt(o.netEx) + '</span></div>');
-  L.push('<div class="vat-of"><span>' + t('vat_line').replace('{p}', o.vatRate) + '</span><span>' + fmt(o.vat) + '</span></div>');
+            : t('inst_line').replace('{m}', o.widthSum.toFixed(1))) + '</span><span>' + fmt(o.install*vr) + '</span></div>');
+  L.push('<div><span>' + t('measure_line') + '</span><span>' + fmt(o.measure*vr) + '</span></div>');
+  if (o.savingInc > 0.5)
+    L.push('<div class="save"><span>' + t('save_line').replace('{c}', COUPON_CODE) + '</span><span>−' + fmt(o.savingInc) + '</span></div>');
+  L.push('<div class="inst vat-of"><span>' + t('vat_of').replace('{p}', o.vatRate) + '</span><span>' + fmt(o.vat) + '</span></div>');
   box.innerHTML = L.join('');
   document.getElementById('totalOut').innerHTML = fmt(o.totalInc) + '<small>' + t('total_sub') + '</small>';
 }
@@ -3186,15 +3189,11 @@ applyI18n();
 
 <script>
 Object.assign(I18N.he, {
-  th_op:'הפעלה', th_room:'חלל', th_price:'מחיר (לפני מע״מ)',
-  ex_vat:'לפני מע״מ',
-  sub_ex:'סה״כ ביניים (לפני מע״מ)', vat_line:'מע״מ ({p}%)',
-  cfg_lead:'בחרו מוצר, חלל, מידות והפעלה — והמחיר מתעדכן על המסך. המחיר הסופי כולל מע״מ, הובלה, התקנה ומדידה מקצועית.'
+  th_op:'הפעלה', th_room:'חלל', th_price:'מחיר',
+  cfg_lead:'בחרו מוצר, חלל, מידות והפעלה — והמחיר מתעדכן על המסך. כל המחירים כוללים מע״מ, הובלה, התקנה ומדידה מקצועית.'
 });
 applyI18n();
 if (typeof calc === 'function') calc();
 </script>
 </body>
 </html>
-
-<!-- build-stamp: kikar-parity r2 -->
