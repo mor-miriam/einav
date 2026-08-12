@@ -1043,8 +1043,9 @@ html[dir=ltr] .spec-info{text-align:left}
   </div>
 
   <div class="apane on" id="t-prices">
+    <p style="font-size:12.5px;color:var(--gray);margin:0 0 12px;line-height:1.6;background:#faf7f2;border:1px solid var(--line);border-radius:8px;padding:10px 12px">כל המחירים בלשונית זו מוזנים <b>כולל מע״מ</b> — בדיוק הסכום שהלקוח רואה ומשלם. המחשבון כבר לא מוסיף מע״מ נוסף מעל.</p>
     <table>
-      <thead><tr><th>מוצר</th><th style="width:92px">חיוב לפי</th><th style="width:72px">מחיר ₪</th><th style="width:72px" title="מחיר לפני הנחה — 0 = כבוי">מקורי ₪</th><th style="width:56px;text-align:center">חשמלי?</th><th style="width:32px"></th></tr></thead>
+      <thead><tr><th>מוצר</th><th style="width:92px">חיוב לפי</th><th style="width:72px">מחיר כולל מע״מ ₪</th><th style="width:72px" title="מחיר מחירון לפני הנחה, כולל מע״מ — 0 = כבוי">מחירון כולל מע״מ ₪</th><th style="width:56px;text-align:center">חשמלי?</th><th style="width:32px"></th></tr></thead>
       <tbody id="adminRows"></tbody>
     </table>
     <h4>הוספת מוצר חדש</h4>
@@ -1063,8 +1064,8 @@ html[dir=ltr] .spec-info{text-align:left}
       <div><label>מסילה חשמלית — ₪ למטר רץ</label><input type="number" id="adm-track-rm" min="0"></div>
     </div>
     <div class="global" style="grid-template-columns:1fr 1fr">
-      <div><label>הובלה והתקנה — ₪ למטר רוחב</label><input type="number" id="adm-install" min="0"></div>
-      <div><label>מדידה מקצועית — ₪ קבוע להזמנה</label><input type="number" id="adm-measure" min="0"></div>
+      <div><label>הובלה והתקנה — ₪ למטר רוחב (כולל מע״מ)</label><input type="number" id="adm-install" min="0"></div>
+      <div><label>מדידה מקצועית — ₪ קבוע להזמנה (כולל מע״מ)</label><input type="number" id="adm-measure" min="0"></div>
       <div><label>חיוב מינימלי לפריט (מטר / מ״ר)</label><input type="number" id="adm-min" min="0" step="0.1"></div>
       <div><label>מע״מ %</label><input type="number" id="adm-vat" min="0" step="0.5"></div>
     </div>
@@ -1165,51 +1166,20 @@ html[dir=ltr] .spec-info{text-align:left}
    ============================================================ */
 const PRICES_DEFAULT = /*PJSON*/{
  "products": {
-  "fabric": {
-   "label": "וילונות הסטה בד דקורטיבי",
-   "en": "Decorative Drapery",
-   "unit": "rm",
-   "price": 720,
-   "origPrice": 800,
-   "hasElectric": true
-  },
-  "vertical": {
-   "label": "וילונות הסטה בד האפלה",
-   "en": "Blackout Drapery",
-   "unit": "rm",
-   "price": 680,
-   "origPrice": 750,
-   "hasElectric": true
-  },
-  "panel": {
-   "label": "רומאי רך",
-   "en": "Roman Shades",
-   "unit": "sqm",
-   "price": 600,
-   "origPrice": 720,
-   "hasElectric": true
-  },
-  "p1786522259775": {
-   "label": "רומאי קלאסי",
-   "unit": "sqm",
-   "price": 600,
-   "origPrice": 700,
-   "hasElectric": true
-  },
-  "venetian": {
-   "label": "תריס ונציאני עץ 50 מ״מ",
-   "en": "Wooden Venetian",
-   "unit": "sqm",
-   "price": 560,
-   "origPrice": 700,
-   "hasElectric": false
-  },
   "screen": {
    "label": "וילונות גלילה הצללה",
    "en": "Roller Screen",
    "unit": "sqm",
    "price": 360,
    "origPrice": 480,
+   "hasElectric": true
+  },
+  "fabric": {
+   "label": "וילונות הסטה בד דקורטיבי",
+   "en": "Decorative Drapery",
+   "unit": "rm",
+   "price": 720,
+   "origPrice": 800,
    "hasElectric": true
   },
   "blackout": {
@@ -1228,12 +1198,43 @@ const PRICES_DEFAULT = /*PJSON*/{
    "origPrice": 600,
    "hasElectric": true
   },
+  "vertical": {
+   "label": "וילונות הסטה בד האפלה",
+   "en": "Blackout Drapery",
+   "unit": "rm",
+   "price": 680,
+   "origPrice": 750,
+   "hasElectric": true
+  },
+  "panel": {
+   "label": "רומאי רך",
+   "en": "Roman Shades",
+   "unit": "sqm",
+   "price": 600,
+   "origPrice": 720,
+   "hasElectric": true
+  },
   "duette": {
    "label": "וילונות דואט / פליסה",
    "en": "Duette / Pleated",
    "unit": "sqm",
    "price": 700,
    "origPrice": 750,
+   "hasElectric": true
+  },
+  "venetian": {
+   "label": "תריס ונציאני עץ 50 מ״מ",
+   "en": "Wooden Venetian",
+   "unit": "sqm",
+   "price": 560,
+   "origPrice": 700,
+   "hasElectric": false
+  },
+  "p1786522259775": {
+   "label": "רומאי קלאסי",
+   "unit": "sqm",
+   "price": 600,
+   "origPrice": 700,
    "hasElectric": true
   }
  },
@@ -2469,8 +2470,14 @@ Object.assign(I18N.en.c, {
 });
 
 /* ---------- מחירים ---------- */
-function listPrice(p){ return (p.origPrice && p.origPrice > 0) ? p.origPrice : p.price; }
-function effPrice(p){ return COUPON_OK ? p.price : listPrice(p); }
+/* המחירים בהגדרות מוזנים ככוללי מע״מ (מה שהלקוח משלם).
+   המחשבון עובד פנימית ללא מע״מ ומוסיף מע״מ פעם אחת בתצוגה,
+   לכן ממירים כאן את המחיר הכולל למחיר ללא מע״מ. */
+function vatF(){ return 1 + ((CFG.vatRate || 18) / 100); }
+function listPriceInc(p){ return (p.origPrice && p.origPrice > 0) ? p.origPrice : p.price; }
+function effPriceInc(p){ return COUPON_OK ? p.price : listPriceInc(p); }
+function listPrice(p){ return listPriceInc(p) / vatF(); }
+function effPrice(p){ return effPriceInc(p) / vatF(); }
 function onCouponInput(){
   var el = document.getElementById('couponInput');
   var st = document.getElementById('couponState');
@@ -2524,11 +2531,13 @@ function buildOrder() {
         notes:'פרופיל: ' + (co?colorLabel(co):colorId) + ' · ' + (ch?colorLabel(ch):chainId) });
     });
   }
-  var install = items.length ? widthSum * (CFG.installRate || 0) : 0;
-  var minInst = (CFG.installMin === undefined ? 250 : CFG.installMin);
+  /* הובלה, התקנה ומדידה מוזנים גם הם ככוללי מע״מ — ממירים ללא מע״מ */
+  var _vf = vatF();
+  var install = items.length ? widthSum * ((CFG.installRate || 0) / _vf) : 0;
+  var minInst = (CFG.installMin === undefined ? 250 : CFG.installMin) / _vf;
   var installMinApplied = false;
   if (items.length && install < minInst) { install = minInst; installMinApplied = true; }
-  var measure = items.length ? (CFG.measureFee || 0) : 0;
+  var measure = items.length ? ((CFG.measureFee || 0) / _vf) : 0;
   var netEx   = subtotalEx + install + measure;
   var vatRate = CFG.vatRate || 18;
   var vat     = netEx * vatRate / 100;
