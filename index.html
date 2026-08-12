@@ -1043,17 +1043,17 @@ html[dir=ltr] .spec-info{text-align:left}
   </div>
 
   <div class="apane on" id="t-prices">
-    <p style="font-size:12.5px;color:var(--gray);margin:0 0 12px;line-height:1.6;background:#faf7f2;border:1px solid var(--line);border-radius:8px;padding:10px 12px">כל המחירים בלשונית זו מוזנים <b>כולל מע״מ</b> — בדיוק הסכום שהלקוח רואה ומשלם. המחשבון כבר לא מוסיף מע״מ נוסף מעל.</p>
+    <p style="font-size:12.5px;color:var(--gray);margin:0 0 12px;line-height:1.6;background:#faf7f2;border:1px solid var(--line);border-radius:8px;padding:10px 12px">מזינים כאן רק את <b>מחיר המחירון (כולל מע״מ)</b> — המחיר המלא לפני הנחה. עמודת «אחרי הנחה» מחושבת אוטומטית: הנחת <b>20% של קוד EINAV</b> יורדת מהמחירון לבד. כל המחירים כוללים מע״מ — זה בדיוק מה שהלקוח משלם.</p>
     <table>
-      <thead><tr><th>מוצר</th><th style="width:92px">חיוב לפי</th><th style="width:72px">מחיר כולל מע״מ ₪</th><th style="width:72px" title="מחיר מחירון לפני הנחה, כולל מע״מ — 0 = כבוי">מחירון כולל מע״מ ₪</th><th style="width:56px;text-align:center">חשמלי?</th><th style="width:32px"></th></tr></thead>
+      <thead><tr><th>מוצר</th><th style="width:92px">חיוב לפי</th><th style="width:82px">אחרי הנחה ₪<br><span style="font-weight:400;font-size:10px;color:#8B8179">(אוטומטי)</span></th><th style="width:72px" title="מחיר המחירון המלא, כולל מע״מ — כאן מזינים">מחיר מחירון ₪<br><span style="font-weight:400;font-size:10px;color:#8B8179">(כולל מע״מ)</span></th><th style="width:56px;text-align:center">חשמלי?</th><th style="width:32px"></th></tr></thead>
       <tbody id="adminRows"></tbody>
     </table>
     <h4>הוספת מוצר חדש</h4>
     <div class="new-product">
       <input type="text" id="np-name" placeholder="שם המוצר">
       <select id="np-unit"><option value="sqm">מ״ר</option><option value="rm">מטר רץ</option></select>
-      <input type="number" id="np-price" placeholder="מחיר ₪" min="0">
-      <input type="number" id="np-orig" placeholder="מקורי ₪" min="0" title="מחיר לפני הנחה (רשות)">
+      <input type="number" id="np-price" style="display:none">
+      <input type="number" id="np-orig" placeholder="מחיר מחירון ₪ (כולל מע״מ)" min="0" title="מחיר המחירון המלא כולל מע״מ — ההנחה תרד אוטומטית">
       <label style="display:flex;align-items:center;gap:6px;font-size:13px;white-space:nowrap"><input type="checkbox" id="np-electric" style="width:auto" checked> חשמלי</label>
       <button onclick="addProduct()">+ הוספה</button>
     </div>
@@ -2474,8 +2474,11 @@ Object.assign(I18N.en.c, {
    המחשבון עובד פנימית ללא מע״מ ומוסיף מע״מ פעם אחת בתצוגה,
    לכן ממירים כאן את המחיר הכולל למחיר ללא מע״מ. */
 function vatF(){ return 1 + ((CFG.vatRate || 18) / 100); }
+/* אחוז ההנחה של הקוד — נלקח מהגדרות ההטבה (EINAV 20%) */
+function discPct(){ var v = parseFloat((typeof COUPON_PCT !== 'undefined' && COUPON_PCT) || (CONTENT && CONTENT.couponPct) || 20); return isNaN(v) ? 0 : v; }
+/* המחיר שמוזן בפאנל הוא מחיר המחירון (כולל מע״מ). ההנחה מחושבת אוטומטית מהמחירון. */
 function listPriceInc(p){ return (p.origPrice && p.origPrice > 0) ? p.origPrice : p.price; }
-function effPriceInc(p){ return COUPON_OK ? p.price : listPriceInc(p); }
+function effPriceInc(p){ return COUPON_OK ? (listPriceInc(p) * (1 - discPct()/100)) : listPriceInc(p); }
 function listPrice(p){ return listPriceInc(p) / vatF(); }
 function effPrice(p){ return effPriceInc(p) / vatF(); }
 function onCouponInput(){
@@ -3006,14 +3009,61 @@ applyI18n();
 
 <script>
 (function(){
-  /* ---------- שדה מינימום ההובלה בפאנל ---------- */
+  /* ---------- שדה מינימום ההובלה + מודל מחיר-מחירון יחיד ---------- */
+  function _discPct(){ var v = parseFloat((typeof COUPON_PCT !== 'undefined' && COUPON_PCT) || (CONTENT && CONTENT.couponPct) || 20); return isNaN(v) ? 0 : v; }
   var baseRender = renderPricesPane, baseCollect = collectAdmin;
   renderPricesPane = function(){ baseRender();
     var el = document.getElementById('adm-install-min');
-    if (el) el.value = (CFG.installMin === undefined ? 250 : CFG.installMin); };
+    if (el) el.value = (CFG.installMin === undefined ? 250 : CFG.installMin);
+    /* עמודת «מחיר» הופכת ל«אחרי הנחה» — לקריאה בלבד, מחושבת מהמחירון */
+    var pct = _discPct();
+    document.querySelectorAll('#adminRows tr').forEach(function(tr){
+      var after = tr.querySelector('.a-price');   /* אחרי הנחה — אוטומטי */
+      var list  = tr.querySelector('.a-orig');    /* מחיר מחירון — עריכה */
+      if (!after || !list) return;
+      after.readOnly = true; after.tabIndex = -1;
+      after.style.background = '#f3f0ea'; after.style.color = '#8B8179'; after.style.cursor = 'not-allowed';
+      list.setAttribute('placeholder', 'מחירון ₪');
+      function sync(){ var v = parseFloat(list.value) || 0; after.value = v ? Math.round(v * (1 - pct/100)) : ''; }
+      list.addEventListener('input', sync);
+      sync();
+    });
+  };
   collectAdmin = function(){ baseCollect();
     var el = document.getElementById('adm-install-min');
-    if (el) CFG.installMin = parseFloat(el.value) || 0; };
+    if (el) CFG.installMin = parseFloat(el.value) || 0;
+    /* המחיר המוזן הוא מחירון — נגזור ממנו את מחיר-אחרי-הנחה */
+    var pct = _discPct();
+    Object.keys(CFG.products).forEach(function(k){
+      var p = CFG.products[k];
+      var listInc = (p.origPrice && p.origPrice > 0) ? p.origPrice : p.price;
+      p.origPrice = listInc;
+      p.price = Math.round(listInc * (1 - pct/100));
+    });
+  };
+  /* הוספת מוצר: השדה היחיד הוא מחיר מחירון (np-orig) */
+  window.addProduct = function(){
+    var name = document.getElementById('np-name').value.trim();
+    if (!name) { flash('יש להזין שם מוצר', true); return; }
+    collectAdmin();
+    var listInc = parseFloat(document.getElementById('np-orig').value) || 0;
+    var pct = _discPct();
+    CFG.products['p' + Date.now()] = {
+      label: name,
+      unit: document.getElementById('np-unit').value,
+      origPrice: listInc,
+      price: Math.round(listInc * (1 - pct/100)),
+      hasElectric: document.getElementById('np-electric').checked
+    };
+    persist();
+    document.getElementById('np-name').value = '';
+    document.getElementById('np-orig').value = '';
+    var _npp = document.getElementById('np-price'); if (_npp) _npp.value = '';
+    renderPricesPane();
+    refreshQuoteSelects();
+    if (typeof calc === 'function') calc();
+    flash('✓ המוצר נוסף');
+  };
 
   /* ---------- חזרה מ-PayPlus עם ?paid=1 → פתיחת ההזמנה במאנדיי ---------- */
   if (window.__MIRIAM_PAID) {
