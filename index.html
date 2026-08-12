@@ -762,6 +762,33 @@ html[dir=ltr] .spec-info{text-align:left}
     .sticky-total .st-num { font-size:18px; }
     .sticky-total .btn { padding:12px 18px; font-size:13.5px; }
   }
+
+  /* ===== פריטת כיכר: המחשבון והטיפוגרפיה כמו kikar.miriam.co.il ===== */
+  body { background:var(--white); }
+  h2 { font-size:clamp(26px,3.6vw,40px); font-weight:600; line-height:1.25; letter-spacing:0; }
+  .kicker { letter-spacing:.2em; }
+  .config { background:#fafafa; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:90px 24px; }
+  .config h2 { font-size:clamp(26px,3.6vw,40px); font-weight:600; letter-spacing:0; }
+  .config .lead { color:var(--gray); font-size:16px; }
+  .config-card { background:var(--white); border:1px solid var(--line); border-radius:var(--radius); margin-top:44px; padding:0; box-shadow:none; }
+  table.quote th { background:var(--white); font-size:12.5px; font-weight:600; letter-spacing:.06em; color:var(--gray); padding:16px 14px; text-transform:none; }
+  table.quote td { padding:10px 8px; border-bottom:1px solid var(--line); }
+  .quote select, .quote input { font-size:14.5px; font-weight:300; background:var(--white); border:1px solid var(--line); border-radius:8px; padding:11px 12px; }
+  .quote select { padding-left:30px; }
+  .quote select:focus, .quote input:focus { border-color:var(--ink); }
+  td.price-cell { font-weight:600; font-size:15px; }
+  td.price-cell small { font-weight:300; font-size:11px; color:var(--gray); }
+  .summary { border:1px solid var(--ink); border-radius:var(--radius); background:var(--white); padding:34px 38px; box-shadow:none; }
+  .summary .lines { font-size:15px; font-weight:300; color:var(--ink); }
+  .summary .total-label { font-size:12.5px; letter-spacing:.18em; color:var(--gray); }
+  .coupon-row, .quote-meta { background:var(--white); }
+  .add-row { border:1px solid var(--ink); border-radius:var(--radius); font-size:14px; padding:11px 28px; color:var(--ink); background:none; }
+  @media (max-width:760px) {
+    table.quote tbody#rows td:nth-child(5) { grid-column:1 / -1; }
+    table.quote tbody#rows td:nth-child(6) { position:static; }
+    table.quote tbody#rows td:nth-child(7) { position:absolute; top:8px; inset-inline-start:8px; }
+  }
+
 </style>
 </head>
 <body>
@@ -849,12 +876,12 @@ html[dir=ltr] .spec-info{text-align:left}
       <table class="quote" id="quoteTable">
         <thead class="th-window">
           <tr>
-            <th style="width:24%" data-i18n="th_product"></th>
-            <th style="width:17%" data-i18n="th_room"></th>
-            <th style="width:12%" data-i18n="th_width"></th>
-            <th style="width:12%" data-i18n="th_height"></th>
-            <th style="width:9%" data-i18n="th_qty"></th>
-            <th style="width:16%" data-i18n="th_price"></th>
+            <th style="width:22%" data-i18n="th_product"></th>
+            <th style="width:15%" data-i18n="th_room"></th>
+            <th style="width:11%" data-i18n="th_width"></th>
+            <th style="width:11%" data-i18n="th_height"></th>
+            <th style="width:14%" data-i18n="th_op"></th>
+            <th style="width:17%" data-i18n="th_price"></th>
             <th style="width:5%"></th>
           </tr>
         </thead>
@@ -1663,7 +1690,7 @@ function addRow(preset) {
     <td><select class="f-room" onchange="calc()">${roomOptions()}</select></td>
     <td><input type="number" min="20" max="900" placeholder="${t('ph_width')}" class="f-w" oninput="calc()"></td>
     <td><input type="number" min="20" max="500" placeholder="${t('ph_height')}" class="f-h" oninput="calc()"></td>
-    <td><input type="number" min="1" max="500" value="1" class="f-qty" oninput="calc()"></td>
+    <td><select class="f-op" onchange="opChanged(this)"><option value="manual">ידני</option><option value="motor">חשמלי</option></select><input type="hidden" value="1" class="f-qty"></td>
     <td class="finish-cell">
       <div class="fin"><span class="sw-dot" data-for="color"></span><select class="f-color" onchange="calc()">${colorOptions()}</select></div>
       <div class="fin"><span class="sw-dot" data-for="chain"></span><select class="f-chain" onchange="calc()">${chainOptions()}</select></div>
@@ -1684,6 +1711,11 @@ function onProductChange(sel) {
   if (chain) {
     const motorOpt = chain.querySelector('[value=motor]');
     if (motorOpt) { motorOpt.disabled = !p.hasElectric; if (!p.hasElectric && chain.value==='motor') chain.value = CHAIN_OPTIONS[0].id; }
+  }
+  const op = tr.querySelector('.f-op');
+  if (op) {
+    const mo = op.querySelector('[value=motor]');
+    if (mo) { mo.disabled = !p.hasElectric; if (!p.hasElectric && op.value==='motor') { op.value = 'manual'; const ch2 = tr.querySelector('.f-chain'); if (ch2) ch2.value = CHAIN_OPTIONS[0].id; } }
   }
   calc();
 }
@@ -2511,7 +2543,7 @@ function buildOrder() {
       items.push({ tr:tr, kind:'sqm', unit:p.unit, unitLabel:unitLabel(p), product:prodLabel(p),
         sqm:q, qty:q, dims:q + ' ' + unitLabel(p), room:(LANG==='en'?'By quantity':'הערכה לפי כמות'),
         color:co?colorLabel(co):colorId, chain:ch?colorLabel(ch):chainId, motor:motor, ex:ex, exList:exList,
-        notes:'פרופיל: ' + (co?colorLabel(co):colorId) + ' · ' + (ch?colorLabel(ch):chainId) });
+        notes:(motor > 0 ? 'הפעלה: חשמלי' : 'הפעלה: ידני') });
     });
   } else {
     [].slice.call(tbody.children).forEach(function(tr){
@@ -2532,7 +2564,7 @@ function buildOrder() {
       items.push({ tr:tr, kind:'window', product:prodLabel(p), room:t('rooms')[roomKey],
         dims:w + '×' + h, w:w, h:h, qty:qty, color:co?colorLabel(co):colorId, chain:ch?colorLabel(ch):chainId,
         motor:motor, ex:ex, exList:exList,
-        notes:'פרופיל: ' + (co?colorLabel(co):colorId) + ' · ' + (ch?colorLabel(ch):chainId) });
+        notes:(motor > 0 ? 'הפעלה: חשמלי' : 'הפעלה: ידני') });
     });
   }
   /* הובלה, התקנה ומדידה — לפני מע״מ (מודל כיכר); המע״מ מתווסף בסיכום */
@@ -2550,6 +2582,17 @@ function buildOrder() {
            savingInc: Math.max(0, (listEx - subtotalEx) * (1 + vatRate/100)) };
 }
 
+/* ---------- הפעלה: ידני / חשמלי (כמו כיכר) ---------- */
+function opOptions() {
+  return '<option value="manual">ידני</option><option value="motor">חשמלי</option>';
+}
+function opChanged(sel) {
+  var tr = sel.closest('tr');
+  var chain = tr.querySelector('.f-chain');
+  if (chain) chain.value = (sel.value === 'motor') ? 'motor' : CHAIN_OPTIONS[0].id;
+  calc();
+}
+
 /* ---------- שורות עם עמודת מחיר ---------- */
 function addRow(preset) {
   var tr = document.createElement('tr');
@@ -2560,7 +2603,8 @@ function addRow(preset) {
     '<td><select class="f-room" onchange="calc()">' + roomOptions() + '</select></td>' +
     '<td><input type="number" min="20" max="900" placeholder="' + t('ph_width') + '" class="f-w" oninput="calc()"></td>' +
     '<td><input type="number" min="20" max="500" placeholder="' + t('ph_height') + '" class="f-h" oninput="calc()"></td>' +
-    '<td><input type="number" min="1" max="500" value="1" class="f-qty" oninput="calc()"></td>' +
+    '<td><select class="f-op" onchange="opChanged(this)">' + opOptions() + '</select>' +
+      '<input type="hidden" value="1" class="f-qty"></td>' +
     '<td class="price-cell"><small>—</small></td>' +
     '<td><button class="row-remove" onclick="removeRow(this)">×</button></td>';
   tbody.appendChild(tr);
@@ -2595,9 +2639,8 @@ function calc() {
   document.querySelectorAll('#quoteTable td.price-cell').forEach(function(td){ td.innerHTML = '<small>—</small>'; });
   o.items.forEach(function(it){
     var cell = it.tr && it.tr.querySelector('td.price-cell'); if (!cell) return;
-    var inc = it.ex*vr, incList = it.exList*vr;
-    cell.innerHTML = (incList > inc + 0.5 ? '<span class="orig">' + fmt(incList) + '</span>&nbsp;' : '')
-      + fmt(inc) + '<small>' + t('inc_vat') + '</small>';
+    cell.innerHTML = (it.exList > it.ex + 0.5 ? '<span class="orig">' + fmt(it.exList) + '</span>&nbsp;' : '')
+      + fmt(it.ex) + '<small>' + t('ex_vat') + '</small>';
   });
 
   var box = document.getElementById('summaryLines');
@@ -2618,20 +2661,20 @@ function calc() {
   }
 
   var L = o.items.map(function(it){
-    var inc = it.ex*vr, incList = it.exList*vr;
     var desc = it.kind==='sqm'
-      ? it.product + ' · ' + it.sqm + ' ' + it.unitLabel + ' · ' + it.chain
-      : it.product + ' · ' + it.room + ' · <bdi dir="ltr">' + it.dims + '</bdi>' + (LANG==='en'?' cm':' ס״מ')
-        + (LANG==='en' ? ' × ' + it.qty : ' · כמות ' + it.qty);
+      ? it.product + ' · ' + it.sqm + ' ' + it.unitLabel
+      : it.product + ' · ' + it.room + ' · <bdi dir="ltr">' + it.dims + '</bdi>' + ' ס״מ'
+        + (it.motor > 0 ? ' · חשמלי' : '');
     return '<div><span>' + desc + '</span><span>'
-      + (incList > inc + 0.5 ? '<span class="orig">' + fmt(incList) + '</span>&nbsp;' : '') + fmt(inc) + '</span></div>';
+      + (it.exList > it.ex + 0.5 ? '<span class="orig">' + fmt(it.exList) + '</span>&nbsp;' : '') + fmt(it.ex) + '</span></div>';
   });
   L.push('<div class="inst"><span>' + (o.installMinApplied ? t('inst_min')
-            : t('inst_line').replace('{m}', o.widthSum.toFixed(1))) + '</span><span>' + fmt(o.install*vr) + '</span></div>');
-  L.push('<div><span>' + t('measure_line') + '</span><span>' + fmt(o.measure*vr) + '</span></div>');
-  if (o.savingInc > 0.5)
-    L.push('<div class="save"><span>' + t('save_line').replace('{c}', COUPON_CODE) + '</span><span>−' + fmt(o.savingInc) + '</span></div>');
-  L.push('<div class="inst vat-of"><span>' + t('vat_of').replace('{p}', o.vatRate) + '</span><span>' + fmt(o.vat) + '</span></div>');
+            : t('inst_line').replace('{m}', o.widthSum.toFixed(1))) + '</span><span>' + fmt(o.install) + '</span></div>');
+  L.push('<div><span>' + t('measure_line') + '</span><span>' + fmt(o.measure) + '</span></div>');
+  if (o.listEx > o.subtotalEx + 0.5)
+    L.push('<div class="save"><span>' + t('save_line').replace('{c}', COUPON_CODE) + '</span><span>−' + fmt(o.listEx - o.subtotalEx) + '</span></div>');
+  L.push('<div class="inst"><span>' + t('sub_ex') + '</span><span>' + fmt(o.netEx) + '</span></div>');
+  L.push('<div class="vat-of"><span>' + t('vat_line').replace('{p}', o.vatRate) + '</span><span>' + fmt(o.vat) + '</span></div>');
   box.innerHTML = L.join('');
   document.getElementById('totalOut').innerHTML = fmt(o.totalInc) + '<small>' + t('total_sub') + '</small>';
 }
@@ -3139,6 +3182,17 @@ applyI18n();
     }
   };
 })();
+</script>
+
+<script>
+Object.assign(I18N.he, {
+  th_op:'הפעלה', th_room:'חלל', th_price:'מחיר (לפני מע״מ)',
+  ex_vat:'לפני מע״מ',
+  sub_ex:'סה״כ ביניים (לפני מע״מ)', vat_line:'מע״מ ({p}%)',
+  cfg_lead:'בחרו מוצר, חלל, מידות והפעלה — והמחיר מתעדכן על המסך. המחיר הסופי כולל מע״מ, הובלה, התקנה ומדידה מקצועית.'
+});
+applyI18n();
+if (typeof calc === 'function') calc();
 </script>
 </body>
 </html>
