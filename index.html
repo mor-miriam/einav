@@ -531,13 +531,13 @@ html[dir=ltr] .spec-info{text-align:left}
   :root {
     --cream:#F4F2EC; --ink:#1D1918; --brown:#33282A;
     --muted:#8B8179; --hair:#E2DED5; --white:#FFFFFF;
-    --band:#EAE6DD; --radius:12px;
+    --band:#EAE6DD; --radius:12px; --barbrown:#3A2C26;
   }
   body { background:var(--cream); color:var(--ink); font-weight:300; }
   .hidden-finish { display:none; }
 
   /* ניווט ופס הקוד */
-  .collab { background:var(--ink); font-size:12.5px; font-weight:400; letter-spacing:.04em; padding:11px 18px; }
+  .collab { background:var(--barbrown); font-size:12.5px; font-weight:400; letter-spacing:.04em; padding:11px 18px; }
   .collab .code { background:var(--cream); color:var(--ink); font-size:11px; letter-spacing:.22em; padding:4px 14px; }
   .collab .go { text-decoration:none; border-bottom:1px solid rgba(255,255,255,.35); padding-bottom:1px; }
   nav { background:rgba(244,242,236,.82); border-bottom:1px solid var(--hair); padding:16px 40px; }
@@ -929,8 +929,8 @@ html[dir=ltr] .spec-info{text-align:left}
       <p class="lead" data-c="visitLead"></p>
       <div class="visit-info">
         <div><b data-i18n="v_addr_l"></b> <span data-c="visitAddr"></span></div>
-        <div><b data-i18n="v_pm_l"></b> <span data-c="pmName"></span></div>
-        <div><b data-i18n="v_mail_l"></b> <span data-c="pmEmail"></span></div>
+        <div><b>שעות פתיחה:</b> <span>א׳–ה׳ 10:00–18:00</span></div>
+        <div><b>יום שישי:</b> <span>10:00–13:00</span></div>
       </div>
     </div>
     <div class="visit-img" id="visitImg"></div>
