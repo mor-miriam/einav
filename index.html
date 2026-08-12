@@ -1043,9 +1043,9 @@ html[dir=ltr] .spec-info{text-align:left}
   </div>
 
   <div class="apane on" id="t-prices">
-    <p style="font-size:12.5px;color:var(--gray);margin:0 0 12px;line-height:1.6;background:#faf7f2;border:1px solid var(--line);border-radius:8px;padding:10px 12px">מזינים כאן רק את <b>מחיר המחירון (כולל מע״מ)</b> — המחיר המלא לפני הנחה. עמודת «אחרי הנחה» מחושבת אוטומטית: הנחת <b>20% של קוד EINAV</b> יורדת מהמחירון לבד. כל המחירים כוללים מע״מ — זה בדיוק מה שהלקוח משלם.</p>
+    <p style="font-size:12.5px;color:var(--gray);margin:0 0 12px;line-height:1.6;background:#faf7f2;border:1px solid var(--line);border-radius:8px;padding:10px 12px">מזינים כאן רק את <b>מחיר המחירון (לפני מע״מ)</b> — המחיר המלא לפני הנחה. עמודת «אחרי הנחה» מחושבת אוטומטית: הנחת <b>20% של קוד EINAV</b> יורדת מהמחירון לבד. המע״מ מתווסף אוטומטית בסיכום ההזמנה (כמו בכיכר).</p>
     <table>
-      <thead><tr><th>מוצר</th><th style="width:92px">חיוב לפי</th><th style="width:82px">אחרי הנחה ₪<br><span style="font-weight:400;font-size:10px;color:#8B8179">(אוטומטי)</span></th><th style="width:72px" title="מחיר המחירון המלא, כולל מע״מ — כאן מזינים">מחיר מחירון ₪<br><span style="font-weight:400;font-size:10px;color:#8B8179">(כולל מע״מ)</span></th><th style="width:56px;text-align:center">חשמלי?</th><th style="width:32px"></th></tr></thead>
+      <thead><tr><th>מוצר</th><th style="width:92px">חיוב לפי</th><th style="width:82px">אחרי הנחה ₪<br><span style="font-weight:400;font-size:10px;color:#8B8179">(אוטומטי)</span></th><th style="width:72px" title="מחיר המחירון המלא, לפני מע״מ — כאן מזינים">מחיר מחירון ₪<br><span style="font-weight:400;font-size:10px;color:#8B8179">(לפני מע״מ)</span></th><th style="width:56px;text-align:center">חשמלי?</th><th style="width:32px"></th></tr></thead>
       <tbody id="adminRows"></tbody>
     </table>
     <h4>הוספת מוצר חדש</h4>
@@ -1053,7 +1053,7 @@ html[dir=ltr] .spec-info{text-align:left}
       <input type="text" id="np-name" placeholder="שם המוצר">
       <select id="np-unit"><option value="sqm">מ״ר</option><option value="rm">מטר רץ</option></select>
       <input type="number" id="np-price" style="display:none">
-      <input type="number" id="np-orig" placeholder="מחיר מחירון ₪ (כולל מע״מ)" min="0" title="מחיר המחירון המלא כולל מע״מ — ההנחה תרד אוטומטית">
+      <input type="number" id="np-orig" placeholder="מחיר מחירון ₪ (לפני מע״מ)" min="0" title="מחיר המחירון המלא לפני מע״מ — ההנחה תרד אוטומטית">
       <label style="display:flex;align-items:center;gap:6px;font-size:13px;white-space:nowrap"><input type="checkbox" id="np-electric" style="width:auto" checked> חשמלי</label>
       <button onclick="addProduct()">+ הוספה</button>
     </div>
@@ -1064,8 +1064,8 @@ html[dir=ltr] .spec-info{text-align:left}
       <div><label>מסילה חשמלית — ₪ למטר רץ</label><input type="number" id="adm-track-rm" min="0"></div>
     </div>
     <div class="global" style="grid-template-columns:1fr 1fr">
-      <div><label>הובלה והתקנה — ₪ למטר רוחב (כולל מע״מ)</label><input type="number" id="adm-install" min="0"></div>
-      <div><label>מדידה מקצועית — ₪ קבוע להזמנה (כולל מע״מ)</label><input type="number" id="adm-measure" min="0"></div>
+      <div><label>הובלה והתקנה — ₪ למטר רוחב (לפני מע״מ)</label><input type="number" id="adm-install" min="0"></div>
+      <div><label>מדידה מקצועית — ₪ קבוע להזמנה (לפני מע״מ)</label><input type="number" id="adm-measure" min="0"></div>
       <div><label>חיוב מינימלי לפריט (מטר / מ״ר)</label><input type="number" id="adm-min" min="0" step="0.1"></div>
       <div><label>מע״מ %</label><input type="number" id="adm-vat" min="0" step="0.5"></div>
     </div>
@@ -2479,8 +2479,9 @@ function discPct(){ var v = parseFloat((typeof COUPON_PCT !== 'undefined' && COU
 /* המחיר שמוזן בפאנל הוא מחיר המחירון (כולל מע״מ). ההנחה מחושבת אוטומטית מהמחירון. */
 function listPriceInc(p){ return (p.origPrice && p.origPrice > 0) ? p.origPrice : p.price; }
 function effPriceInc(p){ return COUPON_OK ? (listPriceInc(p) * (1 - discPct()/100)) : listPriceInc(p); }
-function listPrice(p){ return listPriceInc(p) / vatF(); }
-function effPrice(p){ return effPriceInc(p) / vatF(); }
+/* מודל כיכר: המחירים בפאנל הם לפני מע״מ; המע״מ מתווסף פעם אחת בסיכום */
+function listPrice(p){ return listPriceInc(p); }
+function effPrice(p){ return effPriceInc(p); }
 function onCouponInput(){
   var el = document.getElementById('couponInput');
   var st = document.getElementById('couponState');
@@ -2534,13 +2535,12 @@ function buildOrder() {
         notes:'פרופיל: ' + (co?colorLabel(co):colorId) + ' · ' + (ch?colorLabel(ch):chainId) });
     });
   }
-  /* הובלה, התקנה ומדידה מוזנים גם הם ככוללי מע״מ — ממירים ללא מע״מ */
-  var _vf = vatF();
-  var install = items.length ? widthSum * ((CFG.installRate || 0) / _vf) : 0;
-  var minInst = (CFG.installMin === undefined ? 250 : CFG.installMin) / _vf;
+  /* הובלה, התקנה ומדידה — לפני מע״מ (מודל כיכר); המע״מ מתווסף בסיכום */
+  var install = items.length ? widthSum * (CFG.installRate || 0) : 0;
+  var minInst = (CFG.installMin === undefined ? 250 : CFG.installMin);
   var installMinApplied = false;
   if (items.length && install < minInst) { install = minInst; installMinApplied = true; }
-  var measure = items.length ? ((CFG.measureFee || 0) / _vf) : 0;
+  var measure = items.length ? (CFG.measureFee || 0) : 0;
   var netEx   = subtotalEx + install + measure;
   var vatRate = CFG.vatRate || 18;
   var vat     = netEx * vatRate / 100;
