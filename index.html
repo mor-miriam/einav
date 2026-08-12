@@ -1392,7 +1392,7 @@ const CONTENT_DEFAULT = /*CJSON*/{
  "pmEmail": "mor@miriam.co.il",
  "leadEmail": "office@miriam.co.il",
  "shopifyContactUrl": "https://www.miriam.co.il/contact",
- "webhookUrl": "https://hook.eu2.make.com/dywey41nn2gppynpbob7si8x9l27fz7k",
+ "webhookUrl": "https://hook.eu2.make.com/ytnmdovh5cnsy6oyconlbfiyjmbrh7pz",
  "mondayEmail": "",
  "quotesEmail": "",
  "waNumber": "972775521871",
@@ -1418,7 +1418,7 @@ const CONTENT_DEFAULT = /*CJSON*/{
  "instagramUrl": "https://www.instagram.com/miriamhouseofdesign/",
  "phKey": "phc_BgHjp5zchWHxcL4rctSYcbVRLLVhzNT4vkUQZmf6rBMQ",
  "phHost": "https://eu.i.posthog.com",
- "payApiUrl": "https://hook.eu2.make.com/a5h25ye4ft2azqjnam1byok1lupg5eqg"
+ "payApiUrl": "https://hook.eu2.make.com/xvn41pqjug9xnjw6fwjsrxtlyl9nht0c"
 }/*CJSONEND*/;
 
 const PRICES_KEY = 'miriam-einav-prices-v1';
@@ -2729,7 +2729,9 @@ function submitModal() {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
           amount: deposit, name:name, phone:phone, email:email,
-          orderRef: 'שיתוף פעולה עינב כהן · ' + name + ' · הצעה ' + QUOTE_NO
+          orderRef: 'שיתוף פעולה עינב כהן · ' + name + ' · הצעה ' + QUOTE_NO,
+          successUrl: location.origin + location.pathname + '?paid=1',
+          failUrl:    location.origin + location.pathname + '?payfail=1'
         })
       })
       .then(function(r){ return r.json(); })
