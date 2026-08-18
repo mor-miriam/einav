@@ -564,7 +564,9 @@ html[dir=ltr] .spec-info{text-align:left}
   /* רצועת עינב */
   .einav { background:var(--band); padding:30px 24px; }
   .einav blockquote { border-inline-start:1px solid var(--muted); color:var(--brown);
-    font-size:16px; font-weight:300; letter-spacing:.005em; }
+    font-size:16px; font-weight:300; letter-spacing:.005em; white-space:pre-line; line-height:1.7; }
+  .einav-grid { max-width:920px; align-items:start; }
+  .einav-portrait { margin-top:4px; }
   .einav .who b { font-weight:500; }
   .einav .who { color:var(--muted); }
 
@@ -1448,7 +1450,7 @@ const CONTENT_DEFAULT = /*CJSON*/{
  "videoUrl": "",
  "einavKicker": "",
  "einavTitle": "הבית של עינב",
- "einavQuote": "תפרו לי בהתאמה אישית, הגיעו למדוד, התקינו — וזה שינה לי את כל הסלון.",
+ "einavQuote": "אחרי שנים עם וילונות של מרים אורגון בבית, הבנתי מה הכי נכון לי.\nוילונות רכים, נשפכים ורומנטיים מהבד שתמיד היה לי — בשילוב וילונות רומאיים שלנצח יגרמו לי להרגיש בחלום צרפתי.\nרק שהפעם עם טוויסט: גוון שמנת חם ומטריף.\nקלאסי, נצחי, אבל עם טוויסט מדויק לסגנון שלי.",
  "einavName": "עינב כהן",
  "einavHandle": "@einav_cohen1",
  "einavText": "ההטבה שעינב ביקשה עבורכם: 20% הנחה עם הקוד EINAV, על כל הוילונות וההצללה.",
