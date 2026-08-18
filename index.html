@@ -796,6 +796,14 @@ html[dir=ltr] .spec-info{text-align:left}
     table.quote tbody#rows td:nth-child(7) { position:absolute; top:8px; inset-inline-start:8px; }
   }
 
+
+  .btn-wa { border-color:#1d7a3e; color:#1d7a3e; }
+  .btn-wa:hover { background:#1d7a3e; color:#fff; }
+  .modal.compact .frow3, .modal.compact #leadEmail { display:none; }
+  .modal.compact .frow { grid-template-columns:1fr; }
+  .wa-note { display:none; font-size:12.5px; color:var(--gray); margin-top:10px; text-align:center; line-height:1.5; }
+  .modal.compact .wa-note { display:block; }
+
 </style>
 </head>
 <body>
@@ -924,6 +932,7 @@ html[dir=ltr] .spec-info{text-align:left}
     <div class="quote-meta" id="quoteMeta"></div>
     <div class="config-ctas">
       <button class="btn btn-solid" onclick="reserveClick()" data-i18n="cta_reserve"></button>
+      <button class="btn btn-outline btn-wa" onclick="openModal('wa')" data-i18n="cta_wa"></button>
       <button class="btn btn-outline" onclick="openModal('visit')" data-i18n="cta_visit"></button>
     </div>
     <p class="cta-sub" data-i18n="cta_sub"></p>
@@ -3357,6 +3366,82 @@ if (typeof calc === 'function') calc();
     };
     if (typeof reserveClick === 'function') window.reserveClick = function(){ window.openModal('quote'); };
   }
+})();
+</script>
+
+<script>
+(function(){
+  Object.assign(I18N.he, {
+    cta_wa:'שלחו לי את ההצעה בוואטסאפ',
+    m_wa_t:'ההצעה אליכם לוואטסאפ',
+    m_wa_x:'השאירו שם וטלפון — ההצעה המלאה תיפתח לכם בוואטסאפ, ותישמר אצלנו במערכת. בלי מחויבות.',
+    m_wa_b:'לקבל את ההצעה בוואטסאפ'
+  });
+  applyI18n();
+
+  /* --- openModal: מצב קומפקטי לוואטסאפ --- */
+  var _open = openModal;
+  window.openModal = function(kind){
+    if (kind === 'wa') {
+      /* וידוא שיש הצעה */
+      var o = (typeof buildOrder==='function') ? buildOrder() : null;
+      if (!o || !o.items.length) { alert('הזינו קודם מוצר ומידות כדי שנוכל לשלוח הצעה'); return; }
+      currentModal = 'wa';
+      document.getElementById('modalTitle').textContent = t('m_wa_t');
+      document.getElementById('modalText').textContent = t('m_wa_x');
+      document.getElementById('modalBtn').textContent = t('m_wa_b');
+      var pb = document.getElementById('payBox'); if (pb) pb.style.display = 'none';
+      var ap = document.getElementById('apHint'); if (ap) ap.style.display = 'none';
+      var m = document.querySelector('.modal'); if (m) m.classList.add('compact');
+      if (!document.querySelector('.wa-note')) {
+        var n = document.createElement('div'); n.className='wa-note';
+        n.textContent = 'ההצעה תקפה 30 יום · אפשר לשריין מאוחר יותר עם מקדמה';
+        document.getElementById('modalBtn').insertAdjacentElement('afterend', n);
+      }
+      document.getElementById('modalBg').classList.add('open');
+      if (window.miriamTrack) miriamTrack('wa_modal_opened', { total_inc: Math.round(o.totalInc), items:o.items.length });
+      return;
+    }
+    var m2 = document.querySelector('.modal'); if (m2) m2.classList.remove('compact');
+    return _open.apply(this, arguments);
+  };
+  if (typeof reserveClick === 'function') window.reserveClick = function(){ window.openModal('quote'); };
+
+  /* --- submitModal: ענף וואטסאפ --- */
+  var _submit = submitModal;
+  window.submitModal = function(){
+    if (currentModal !== 'wa') return _submit.apply(this, arguments);
+    var name  = document.getElementById('leadName').value.trim();
+    var phone = document.getElementById('leadPhone').value.trim();
+    if (!name || !phone) { alert('נא למלא שם וטלפון'); return; }
+    var btn = document.getElementById('modalBtn');
+    btn.disabled = true; btn.textContent = 'מכינים את ההצעה…';
+    var o  = buildOrder();
+    var vr = 1 + o.vatRate/100;
+    var lines = o.items.map(function(it){
+      return { product:it.product, room:it.room, dims:it.dims + ' ס״מ', qty:it.qty,
+               priceInc:Math.round(it.ex*vr/(it.qty||1)), notes:it.notes };
+    });
+    if (o.install > 0) lines.push({ product:'הובלה והתקנה', room:'', dims:o.widthSum.toFixed(1)+' מ׳ רוחב', qty:1, priceInc:Math.round(o.install*vr), notes:'' });
+    if (o.measure > 0) lines.push({ product:'מדידה מקצועית', room:'', dims:'', qty:1, priceInc:Math.round(o.measure*vr), notes:'' });
+    var wtext = quoteText(o, name, '');
+    var waPhone = (function(p){ var d=String(p).replace(/\D/g,''); if(d.indexOf('972')===0) return d; if(d.indexOf('0')===0) return '972'+d.slice(1); return d; })(phone);
+
+    sendToMake({
+      type:'wa_quote', source:LEAD_SOURCE, influencer:'עינב כהן', coupon:COUPON_CODE, couponPct:COUPON_PCT,
+      quoteNo:QUOTE_NO, validUntil:QUOTE_VALID_UNTIL, name:name, phone:phone, waPhone:waPhone, email:'',
+      lines:lines, installEx:Math.round(o.install), measureEx:Math.round(o.measure),
+      subtotalEx:Math.round(o.netEx), vat:Math.round(o.vat), totalInc:Math.round(o.totalInc), savingInc:Math.round(o.savingInc),
+      quoteText:wtext
+    }).catch(function(){});
+    if (window.miriamTrack) miriamTrack('wa_quote_sent', { quoteNo:QUOTE_NO, total:Math.round(o.totalInc), items:o.items.length });
+
+    /* פתיחת וואטסאפ אל MIRIAM עם ההצעה מוכנה — הלקוח שולח, ואנחנו רואים את השיחה */
+    var msg = 'היי, אני ' + name + ' 👋\nהגעתי דרך עינב כהן ובניתי הצעה באתר:\n\n' + wtext + '\n\nאשמח שתחזרו אליי 🙏';
+    var url = 'https://wa.me/' + String(CONTENT.waNumber||'').replace(/\D/g,'') + '?text=' + encodeURIComponent(msg);
+    closeModal(); btn.disabled = false; btn.textContent = t('m_wa_b');
+    setTimeout(function(){ window.location.href = url; }, 250);
+  };
 })();
 </script>
 </body>
