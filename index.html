@@ -3205,5 +3205,119 @@ Object.assign(I18N.he, {
 applyI18n();
 if (typeof calc === 'function') calc();
 </script>
+
+<script>
+(function(){
+  if (!window.miriamTrack) return;
+  var T = window.miriamTrack;
+  var S = { calcSeen:false, productPicked:false, dimsEntered:false, priceShown:false,
+            modalOpened:false, fieldsStarted:false, fieldsDone:false, payClicked:false,
+            lastTotal:0, lastItems:0, maxStep:0, stepName:'landing', electric:false, coupon:true };
+  function step(n, name){ if (n > S.maxStep) { S.maxStep = n; S.stepName = name; } }
+
+  /* 1) הגעה למחשבון (גלילה אל הסקשן) */
+  var cfg = document.getElementById('config');
+  if (cfg && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function(es, io){
+      es.forEach(function(e){ if (e.isIntersecting && !S.calcSeen) { S.calcSeen = true; step(1,'calculator_viewed'); T('calculator_viewed'); io.disconnect(); } });
+    }, { threshold:0.25 }).observe(cfg);
+  }
+
+  /* 2-4) מוצר / מידות / מחיר — עוטפים את calc() */
+  var lastSig = '';
+  function snapshot(){
+    if (typeof buildOrder !== 'function') return null;
+    var o; try { o = buildOrder(); } catch(e){ return null; }
+    return o;
+  }
+  if (typeof calc === 'function') {
+    var baseCalc = calc;
+    window.calc = function(){
+      baseCalc.apply(this, arguments);
+      var o = snapshot(); if (!o) return;
+      var rows = document.querySelectorAll('#quoteTable tbody tr');
+      var anyProduct = rows.length > 0;
+      var anyDims = false, anyElectric = false;
+      rows.forEach(function(tr){
+        var w = parseFloat((tr.querySelector('.f-w')||{}).value)||0, h = parseFloat((tr.querySelector('.f-h')||{}).value)||0;
+        if (w>0 && h>0) anyDims = true;
+        var op = tr.querySelector('.f-op'); if (op && op.value==='motor') anyElectric = true;
+      });
+      if (anyProduct && !S.productPicked) { S.productPicked = true; step(2,'product_selected'); T('product_selected'); }
+      if (anyDims && !S.dimsEntered) { S.dimsEntered = true; step(3,'dimensions_entered'); T('dimensions_entered'); }
+      if (o.items.length) {
+        var total = Math.round(o.totalInc);
+        var sig = total + '|' + o.items.length + '|' + anyElectric;
+        S.lastTotal = total; S.lastItems = o.items.length; S.electric = anyElectric;
+        if (!S.priceShown) { S.priceShown = true; step(4,'price_shown'); }
+        if (sig !== lastSig) {
+          lastSig = sig;
+          T('price_shown', { total_inc: total, items: o.items.length, electric: anyElectric,
+            products: o.items.map(function(i){ return i.product; }).slice(0,6).join(' | ') });
+        }
+      }
+    };
+    /* מוצר נבחר במפורש */
+    document.addEventListener('change', function(e){
+      var t = e.target;
+      if (t && t.classList && t.classList.contains('f-product')) {
+        var lbl = t.options[t.selectedIndex] ? t.options[t.selectedIndex].textContent : '';
+        T('product_changed', { product: lbl });
+      }
+      if (t && t.classList && t.classList.contains('f-op')) T('operation_changed', { operation: t.value });
+    }, true);
+  }
+
+  /* 5) פתיחת המודל (שריון / תיאום) */
+  if (typeof openModal === 'function') {
+    var baseOpen2 = openModal;
+    window.openModal = function(kind){
+      baseOpen2.apply(this, arguments);
+      if (kind === 'quote' && !S.modalOpened) { S.modalOpened = true; step(5,'reserve_modal_opened'); }
+      T(kind === 'visit' ? 'visit_modal_opened' : 'reserve_modal_opened', { total_inc: S.lastTotal, items: S.lastItems });
+    };
+    if (typeof reserveClick === 'function') window.reserveClick = function(){ window.openModal('quote'); };
+  }
+
+  /* 6) מילוי שדות בטופס */
+  var fields = ['leadName','leadPhone','leadEmail','leadTower','leadFloor','leadApt'];
+  document.addEventListener('input', function(e){
+    var id = e.target && e.target.id;
+    if (fields.indexOf(id) < 0) return;
+    if (!S.fieldsStarted) { S.fieldsStarted = true; step(6,'form_started'); T('form_started', { total_inc: S.lastTotal }); }
+    var name = (document.getElementById('leadName')||{}).value||'', phone = (document.getElementById('leadPhone')||{}).value||'';
+    if (name.trim().length > 1 && phone.replace(/\D/g,'').length >= 9 && !S.fieldsDone) {
+      S.fieldsDone = true; step(7,'form_completed'); T('form_completed', { total_inc: S.lastTotal });
+    }
+  }, true);
+
+  /* 7) לחיצה על תשלום */
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('#modalBtn'); if (!b) return;
+    if (typeof currentModal !== 'undefined' && currentModal === 'quote') { S.payClicked = true; step(8,'pay_clicked'); }
+  }, true);
+
+  /* 8) נטישה — נשלח ביציאה מהדף עם השלב האחרון והמחיר שראו */
+  var sentAbandon = false;
+  function abandon(reason){
+    if (sentAbandon || window.__MIRIAM_PAID) return;
+    if (S.payClicked) return;                    /* עברו לתשלום — לא נטישה */
+    sentAbandon = true;
+    T('funnel_exit', { last_step: S.stepName, step_index: S.maxStep, total_inc: S.lastTotal,
+      items: S.lastItems, electric: S.electric, saw_price: S.priceShown, opened_modal: S.modalOpened,
+      started_form: S.fieldsStarted, completed_form: S.fieldsDone, reason: reason,
+      price_bucket: S.lastTotal===0 ? 'no_price' : S.lastTotal<1500 ? '<1.5k' : S.lastTotal<3000 ? '1.5-3k' : S.lastTotal<6000 ? '3-6k' : S.lastTotal<10000 ? '6-10k' : '10k+' });
+  }
+  document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') abandon('hidden'); });
+  window.addEventListener('pagehide', function(){ abandon('pagehide'); });
+
+  /* 9) קופון */
+  var ci = document.getElementById('couponInput');
+  if (ci) ci.addEventListener('change', function(){ T('coupon_changed', { value: (ci.value||'').toUpperCase(), valid: (typeof COUPON_OK!=='undefined')?COUPON_OK:null }); });
+
+  /* 10) חזרה מתשלום */
+  if (window.__MIRIAM_PAID) T('payment_returned');
+})();
+</script>
 </body>
 </html>
