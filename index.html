@@ -3280,5 +3280,84 @@ if (typeof calc === 'function') calc();
   if (window.__MIRIAM_PAID) T('payment_returned');
 })();
 </script>
+
+<style>
+  .quote input.dim-bad { border-color:#b0413e !important; background:#fff6f5; }
+  .dim-hint { display:none; font-size:11px; color:#b0413e; margin-top:4px; line-height:1.35; }
+  td.dim-cell { position:relative; }
+  td.dim-cell.has-hint .dim-hint { display:block; }
+  .dim-toast { position:fixed; bottom:96px; left:50%; transform:translateX(-50%); background:#1D1918; color:#fff;
+    font-size:13.5px; padding:11px 18px; border-radius:100px; z-index:400; box-shadow:0 10px 30px -10px rgba(0,0,0,.4);
+    opacity:0; transition:opacity .25s; pointer-events:none; white-space:nowrap; }
+  .dim-toast.on { opacity:1; }
+  @media (max-width:760px) { .dim-toast { bottom:120px; font-size:12.5px; white-space:normal; text-align:center; max-width:88vw; } }
+</style>
+<script>
+(function(){
+  var MIN_CM = 20;                    /* מתחת לזה — כמעט ודאי מטרים */
+  var toast; function say(msg){
+    if (!toast) { toast = document.createElement('div'); toast.className='dim-toast'; document.body.appendChild(toast); }
+    toast.textContent = msg; toast.classList.add('on');
+    clearTimeout(toast._t); toast._t = setTimeout(function(){ toast.classList.remove('on'); }, 3200);
+  }
+  function hintFor(inp){
+    var td = inp.closest('td'); if (!td) return null;
+    td.classList.add('dim-cell');
+    var h = td.querySelector('.dim-hint');
+    if (!h) { h = document.createElement('div'); h.className='dim-hint'; td.appendChild(h); }
+    return { td:td, h:h };
+  }
+  function clearHint(inp){ var x = hintFor(inp); if (x){ x.td.classList.remove('has-hint'); inp.classList.remove('dim-bad'); } }
+
+  /* בעת יציאה מהשדה: ערך קטן מ-20 → זה מטרים → ממירים אוטומטית לס״מ ומודיעים */
+  function normalize(inp){
+    var v = parseFloat(inp.value);
+    if (!(v > 0)) { clearHint(inp); return; }
+    if (v < MIN_CM) {
+      var cm = Math.round(v * 100);
+      inp.value = cm;
+      var isW = inp.classList.contains('f-w');
+      say('המרנו ' + v + ' מ׳ ל-' + cm + ' ס״מ — המידות בטבלה הן בסנטימטרים');
+      if (window.miriamTrack) miriamTrack('dimension_autofixed', { field: isW?'width':'height', from:v, to:cm });
+      clearHint(inp);
+      if (typeof calc === 'function') calc();
+    } else clearHint(inp);
+  }
+  /* בזמן הקלדה: רק סימון עדין */
+  function live(inp){
+    var v = parseFloat(inp.value);
+    var x = hintFor(inp); if (!x) return;
+    if (v > 0 && v < MIN_CM) {
+      inp.classList.add('dim-bad'); x.td.classList.add('has-hint');
+      x.h.textContent = 'נראה כמו מטרים — הזינו בס״מ (למשל ' + Math.round(v*100) + ')';
+    } else clearHint(inp);
+  }
+  document.addEventListener('input', function(e){ var t=e.target; if (t && (t.classList.contains('f-w')||t.classList.contains('f-h'))) live(t); }, true);
+  document.addEventListener('change', function(e){ var t=e.target; if (t && (t.classList.contains('f-w')||t.classList.contains('f-h'))) normalize(t); }, true);
+  document.addEventListener('blur', function(e){ var t=e.target; if (t && t.classList && (t.classList.contains('f-w')||t.classList.contains('f-h'))) normalize(t); }, true);
+
+  /* חסימת שריון/תיאום אם נשארה מידה לא סבירה */
+  function badRows(){
+    var bad = 0;
+    document.querySelectorAll('#quoteTable tbody tr').forEach(function(tr){
+      var w = parseFloat((tr.querySelector('.f-w')||{}).value)||0, h = parseFloat((tr.querySelector('.f-h')||{}).value)||0;
+      if ((w>0 && w<MIN_CM) || (h>0 && h<MIN_CM)) bad++;
+    });
+    return bad;
+  }
+  if (typeof openModal === 'function') {
+    var baseOpen3 = openModal;
+    window.openModal = function(kind){
+      if (kind === 'quote') {
+        /* קודם ננרמל את כל השדות (אם המשתמש לא יצא מהשדה) */
+        document.querySelectorAll('#quoteTable .f-w, #quoteTable .f-h').forEach(normalize);
+        if (badRows() > 0) { say('יש מידה לא תקינה בטבלה — נא להזין בס״מ'); return; }
+      }
+      return baseOpen3.apply(this, arguments);
+    };
+    if (typeof reserveClick === 'function') window.reserveClick = function(){ window.openModal('quote'); };
+  }
+})();
+</script>
 </body>
 </html>
