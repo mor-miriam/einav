@@ -2770,18 +2770,7 @@ function submitModal() {
           'contact[name]':name, 'contact[email]':email||'lead@miriam.co.il', 'contact[phone]':phone,
           'contact[body]':'אישור הצעת מחיר — ' + LEAD_SOURCE + '\n' + wtext }).toString() }).catch(function(){});
     }
-    fetch('https://formsubmit.co/ajax/' + encodeURIComponent(CONTENT.formsubmitId || CONTENT.leadEmail || 'office@miriam.co.il'), {
-      method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body: JSON.stringify(Object.assign({
-        _subject:'הצעת מחיר ' + QUOTE_NO + ' — ' + name + ' · עינב כהן',
-        'שם מלא':name, 'טלפון':phone, 'אימייל':email||'-', 'כתובת':addr||'-',
-        'מס׳ הצעה':QUOTE_NO, 'תוקף':QUOTE_VALID_UNTIL,
-        'קוד הטבה':COUPON_CODE + ' (' + COUPON_PCT + '%)',
-        'סה״כ כולל מע״מ':'₪' + Math.round(o.totalInc).toLocaleString('he-IL'),
-        'פירוט ההצעה':wtext,
-        'מקור':LEAD_SOURCE
-      }, cc ? {_cc:cc} : {}))
-    }).catch(function(){});
+    /* מייל ההזמנה נשלח דרך Make אחרי התשלום */
 
     if (window.miriamTrack) miriamTrack('quote_submitted', { quoteNo:QUOTE_NO, total:Math.round(o.totalInc), items:o.items.length });
 
@@ -2832,9 +2821,9 @@ function submitModal() {
   }
 
   /* תיאום ביקור באולם התצוגה */
-  sendToMake({ type:'lead', source:LEAD_SOURCE, influencer:'עינב כהן', coupon:COUPON_CODE,
+  var _visitReq = sendToMake({ type:'lead', source:LEAD_SOURCE, influencer:'עינב כהן', coupon:COUPON_CODE,
     name:name, phone:phone, email:email, city:city, address:addr,
-    notes:'בקשת תיאום ביקור באולם התצוגה — דף עינב כהן' }).catch(function(){});
+    notes:'בקשת תיאום ביקור באולם התצוגה — דף עינב כהן' });
   if (CONTENT.shopifyContactUrl) {
     fetch(CONTENT.shopifyContactUrl, { method:'POST', mode:'no-cors',
       headers:{'Content-Type':'application/x-www-form-urlencoded'},
@@ -2842,12 +2831,8 @@ function submitModal() {
         'contact[email]':email||'lead@miriam.co.il','contact[phone]':phone,
         'contact[body]':'ליד חדש — תיאום ביקור · ' + LEAD_SOURCE + '\nכתובת: ' + (addr||'-') + '\nטלפון: ' + phone}).toString() }).catch(function(){});
   }
-  fetch('https://formsubmit.co/ajax/' + encodeURIComponent(CONTENT.formsubmitId || CONTENT.leadEmail || 'office@miriam.co.il'), {
-    method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body: JSON.stringify(Object.assign({ _subject:'ליד חדש: ' + name + ' — עינב כהן',
-      'שם מלא':name, 'טלפון':phone, 'אימייל':email||'-', 'כתובת':addr||'-', 'מקור':LEAD_SOURCE },
-      cc ? {_cc:cc} : {}))
-  }).then(function(r){return r.json();}).then(function(){
+  /* המייל נשלח דרך Make (Gmail) — האישור ללקוח לפי הוובהוק */
+  Promise.resolve(_visitReq).then(function(){
     closeModal(); btn.disabled = false; btn.textContent = t('m_visit_b');
     alert(LANG==='en' ? 'Thank you! We will call you to schedule.' : 'תודה! הבקשה התקבלה — נצור איתכם קשר לתיאום הביקור.');
   }).catch(function(){
@@ -3144,32 +3129,7 @@ applyI18n();
         totalInc:Math.round(order.totalInc), savingInc:Math.round(order.savingInc),
         lines:ol, quoteText:order.quoteText
       }).catch(function(){});
-      /* מייל התראה: הזמנה חדשה עם מקדמה */
-      var _cc = [CONTENT.mondayEmail, CONTENT.quotesEmail].filter(Boolean).join(',');
-      var _detail = (order.lines || []).map(function(l,i){
-            return (i+1) + ') ' + l.product + (l.room ? ' · ' + l.room : '') +
-                   (l.dims ? ' · ' + l.dims : '') + (l.qty ? ' · כמות ' + l.qty : '') +
-                   ' — ₪' + Math.round(l.priceInc).toLocaleString('he-IL'); }).join('\n')
-          + '\n\nהובלה והתקנה: ₪' + Math.round(order.install * (1 + order.vatRate/100)).toLocaleString('he-IL')
-          + '\nמדידה מקצועית: ₪' + Math.round(order.measure * (1 + order.vatRate/100)).toLocaleString('he-IL')
-          + '\nחיסכון עם קוד ' + order.coupon + ': −₪' + Math.round(order.savingInc).toLocaleString('he-IL')
-          + '\nסה״כ ההזמנה: ₪' + Math.round(order.totalInc).toLocaleString('he-IL') + ' (כולל מע״מ)'
-          + '\nמקדמה ששולמה: ₪' + deposit + ' — מתקזזת מההזמנה'
-          + '\nיתרה לתשלום: ₪' + Math.round(order.totalInc - deposit).toLocaleString('he-IL');
-      fetch('https://formsubmit.co/ajax/' + encodeURIComponent(CONTENT.formsubmitId || CONTENT.leadEmail || 'office@miriam.co.il'), {
-        method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
-        body: JSON.stringify(Object.assign({
-          _subject: 'הזמנה חדשה · שולמה מקדמה ₪' + deposit + ' — ' + order.name + ' · עינב כהן',
-          'שם מלא': order.name, 'טלפון': order.phone, 'אימייל': order.email || '-',
-          'כתובת': order.address || '-', 'עיר': order.city || '-',
-          'מס׳ הצעה': order.quoteNo, 'תוקף': order.validUntil,
-          'קוד הטבה': order.coupon,
-          'סטטוס': 'שולמה מקדמה ₪' + deposit + ' — לשריון מחיר ולתיאום מדידה',
-          'פירוט ההזמנה': _detail,
-          'מקור': order.source
-        }, _cc ? {_cc:_cc} : {}))
-      }).catch(function(){});
-
+      /* מייל ההזמנה נשלח מ-Make (Gmail) יחד עם פתיחת ההזמנה במאנדיי */
       try { localStorage.removeItem('miriam-einav-pending'); } catch(e) {}
       if (window.miriamTrack) miriamTrack('deposit_paid', { quoteNo:order.quoteNo, amount:deposit, total:Math.round(order.totalInc) });
       setTimeout(function(){
