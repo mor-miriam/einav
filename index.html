@@ -799,6 +799,8 @@ html[dir=ltr] .spec-info{text-align:left}
 
   .btn-wa { border-color:#1d7a3e; color:#1d7a3e; }
   .btn-wa:hover { background:#1d7a3e; color:#fff; }
+  .btn-solid.btn-wa { background:#1d7a3e; border-color:#1d7a3e; color:#fff; }
+  .btn-solid.btn-wa:hover { background:#155c2e; border-color:#155c2e; }
   .modal.compact .frow3, .modal.compact #leadEmail { display:none; }
   .modal.compact .frow { grid-template-columns:1fr; }
   .wa-note { display:none; font-size:12.5px; color:var(--gray); margin-top:10px; text-align:center; line-height:1.5; }
@@ -931,8 +933,7 @@ html[dir=ltr] .spec-info{text-align:left}
     </div>
     <div class="quote-meta" id="quoteMeta"></div>
     <div class="config-ctas">
-      <button class="btn btn-solid" onclick="reserveClick()" data-i18n="cta_reserve"></button>
-      <button class="btn btn-outline btn-wa" onclick="openModal('wa')" data-i18n="cta_wa"></button>
+      <button class="btn btn-solid btn-wa" onclick="openModal('wa')" data-i18n="cta_wa"></button>
       <button class="btn btn-outline" onclick="openModal('visit')" data-i18n="cta_visit"></button>
     </div>
     <p class="cta-sub" data-i18n="cta_sub"></p>
@@ -1883,7 +1884,7 @@ function toggleLang() {
 /* ============ מודאלים ============ */
 let currentModal = null;
 /* שריון מחיר: פרטים קצרים → תשלום. פרטי ההזמנה נשמרים ונשלחים כהזמנה רק אחרי תשלום */
-function reserveClick() { openModal('quote'); }
+function reserveClick() { openModal('wa'); }
 function openModal(kind) {
   currentModal = kind;
   const pfx = kind === 'visit' ? 'm_visit' : 'm_res';
@@ -2934,7 +2935,6 @@ Object.assign(I18N.he, {
   m_res_t:'שריון ההזמנה', m_res_b:'לתשלום המקדמה ושריון המחיר',
   m_res_x:'משלימים פרטים ומשלמים מקדמה מאובטחת — המחיר שוריין. המקדמה מתקזזת מההזמנה, ומכאן נתאם מדידה בבית ובחירת בד באולם התצוגה.',
   sum_note:'המחיר לפי המידות שהזנתם, וכפוף למדידה בשטח ולבחירת הבד באולם התצוגה.',
-  cta_sub:'מקדמה מאובטחת משריינת את המחיר ומתקזזת מההזמנה.',
   vid_kicker:'', vid_title:'', vid_lead:''
 });
 /* אין גרסת אנגלית — הדף עברית בלבד */
@@ -2947,7 +2947,7 @@ applyI18n();
 
 <div class="sticky-total" id="stickyTotal">
   <div><span class="st-lbl">סה״כ להזמנה</span><span class="st-num" id="stNum">₪0</span></div>
-  <button class="btn btn-solid" onclick="reserveClick()">למימוש ההטבה</button>
+  <button class="btn btn-solid btn-wa" onclick="openModal('wa')">למימוש ההטבה בוואטסאפ</button>
 </div>
 <script>
 (function(){
@@ -3246,7 +3246,7 @@ if (typeof calc === 'function') calc();
       if (kind === 'quote' && !S.modalOpened) { S.modalOpened = true; step(5,'reserve_modal_opened'); }
       T(kind === 'visit' ? 'visit_modal_opened' : 'reserve_modal_opened', { total_inc: S.lastTotal, items: S.lastItems });
     };
-    if (typeof reserveClick === 'function') window.reserveClick = function(){ window.openModal('quote'); };
+    if (typeof reserveClick === 'function') window.reserveClick = function(){ window.openModal('wa'); };
   }
 
   /* 6) מילוי שדות בטופס */
@@ -3364,7 +3364,7 @@ if (typeof calc === 'function') calc();
       }
       return baseOpen3.apply(this, arguments);
     };
-    if (typeof reserveClick === 'function') window.reserveClick = function(){ window.openModal('quote'); };
+    if (typeof reserveClick === 'function') window.reserveClick = function(){ window.openModal('wa'); };
   }
 })();
 </script>
@@ -3383,6 +3383,12 @@ if (typeof calc === 'function') calc();
   var _open = openModal;
   window.openModal = function(kind){
     if (kind === 'wa') {
+      /* נרמול מידות (מטרים→ס״מ) לפני בניית ההצעה */
+      try {
+        document.querySelectorAll('#quoteTable .f-w, #quoteTable .f-h').forEach(function(inp){
+          inp.dispatchEvent(new Event('change', { bubbles:true }));
+        });
+      } catch(e) {}
       /* וידוא שיש הצעה */
       var o = (typeof buildOrder==='function') ? buildOrder() : null;
       if (!o || !o.items.length) { alert('הזינו קודם מוצר ומידות כדי שנוכל לשלוח הצעה'); return; }
@@ -3395,7 +3401,7 @@ if (typeof calc === 'function') calc();
       var m = document.querySelector('.modal'); if (m) m.classList.add('compact');
       if (!document.querySelector('.wa-note')) {
         var n = document.createElement('div'); n.className='wa-note';
-        n.textContent = 'ההצעה תקפה 30 יום · אפשר לשריין מאוחר יותר עם מקדמה';
+        n.textContent = 'ההצעה תקפה 30 יום · נחזור אליכם לתיאום מדידה ובחירת בד';
         document.getElementById('modalBtn').insertAdjacentElement('afterend', n);
       }
       document.getElementById('modalBg').classList.add('open');
@@ -3405,7 +3411,7 @@ if (typeof calc === 'function') calc();
     var m2 = document.querySelector('.modal'); if (m2) m2.classList.remove('compact');
     return _open.apply(this, arguments);
   };
-  if (typeof reserveClick === 'function') window.reserveClick = function(){ window.openModal('quote'); };
+  if (typeof reserveClick === 'function') window.reserveClick = function(){ window.openModal('wa'); };
 
   /* --- submitModal: ענף וואטסאפ --- */
   var _submit = submitModal;
